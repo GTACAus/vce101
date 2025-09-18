@@ -176,27 +176,34 @@ Success criteria: </p>
        <div style="margin-top: 20px;">
       <h3 style="color: #00BC74">STEM Cycle of Inquiry</h3>
   
-<img src="StemCycle.png" alt="GTAC STEM Cycle of Inquiry" style="max-width:100%; height:auto;">
+<img src="StemCycle.png" alt="GTAC STEM Cycle of Inquiry" style="max-width:70%; height:auto;">
 
         <h3 style="text-align: center; font-weight: normal;">Use the STEM Cycle of Inquiry to write an inquiry question about cell activity</h3>
       <h4 style="text-align: left; font-weight: bold; margin-left;">Write your inquiry question here: </h4>
       <textarea id="experiment2" placeholder="What type of cell activity would you like to see?"></textarea>    
 
 
-  <h2 style="color: #ff6d3a">Prepare a control slide:</h2>
+  <h2 style="color: #ff6d3a">CONTROL SETUP: </h2>
 
-<h3> Follow the protocol to set up your slide with paramecium only.</h3>
+<p> <strong>Prepare a control slide: </strong>Follow the protocol to set up your slide with paramecium.</p>
+
+<img src="ProtocolControl.png" alt="Paramecium protocol" style="max-width:90%; height:auto;">
+
+<h2 style="color: #4C34E5">EXPERIMENTAL SETUP: </h2>
+  
+  <p><strong>Your investigation:</strong> Choose a protocol that will help you answer your inquiry question</p>
+
 
   <!-- Collage uploader and preview -->
       <section aria-labelledby="collageHeading" style="margin-top:18px; text-align:left;">
-  <h2 id="collageHeading" style="color: #4C34E5">Photo Collage (Max 12 images)</h2>
+  <h2 id="collageHeading" style="color: #000000">Photo Collage (Max 12 images)</h2>
   <p style="margin-top:6px;">Upload up to 12 images of your paramecium. Drag images to reorder. </p>
   <div class="collage-controls">
           <label class="custom-upload-btn" id="collageUploadLabel">
             Add images to collage
             <input id="collageUploader" type="file" accept="image/*" multiple style="display:none;" />
           </label>
-          <button id="clearCollageBtn" class="custom-upload-btn" style="background:#dc3545; margin-left:8px;">Clear Collage</button>
+          <button id="clearCollageBtn" type="button" class="custom-upload-btn" style="background:#dc3545; margin-left:8px;">Clear Collage</button>
         </div>
         <div id="collage" class="collage" aria-live="polite"></div>
       </section>
@@ -507,36 +514,46 @@ Success criteria: </p>
       });
 
       // Clear collage (robust handler)
-      (function(){
+      // Attach on DOMContentLoaded to ensure the button exists and add debug logs
+      document.addEventListener('DOMContentLoaded', function () {
+        console.log('[debug] DOMContentLoaded: attaching clearCollage handler');
         const btn = document.getElementById('clearCollageBtn');
         if (!btn) { console.warn('clearCollageBtn not found'); return; }
-        btn.addEventListener('click', async () => {
+
+        async function clearCollage() {
+          console.log('[debug] clearCollage invoked');
           if (!confirm('Clear all images from the collage?')) return;
+          btn.disabled = true;
           try {
-            btn.disabled = true;
-            console.log('Clearing collage...');
             const db = await openDB();
             const tx = db.transaction('images', 'readwrite');
             const store = tx.objectStore('images');
-            const req = store.delete(COLLAGE_KEY);
+            const entry = { id: COLLAGE_KEY, collage: [], timestamp: Date.now() };
+            const req = store.put(entry);
             req.onsuccess = function() {
-              console.log('Collage record deleted');
-              renderCollage([]);
+              console.log('Collage record cleared (put empty array)');
+              try { renderCollage([]); } catch (e) { console.warn('renderCollage failed', e); }
               alert('Collage cleared');
             };
             req.onerror = function(e) {
-              console.error('Failed to delete collage record', e);
-              alert('Failed to clear collage (see console)');
+              console.error('Failed to write empty collage record', e);
+              try { renderCollage([]); } catch (e) { console.warn('renderCollage failed', e); }
+              alert('Collage cleared (UI only). See console for DB error.');
             };
             tx.oncomplete = function() { btn.disabled = false; };
             tx.onerror = function(e) { console.error('Transaction error clearing collage', e); btn.disabled = false; };
           } catch (err) {
             console.error('Error clearing collage', err);
-            alert('Error clearing collage (see console)');
+            try { renderCollage([]); } catch (e) { console.warn('renderCollage failed', e); }
+            alert('Error clearing collage (UI cleared). See console for details.');
             btn.disabled = false;
           }
-        });
-      })();
+        }
+
+        // Remove any existing listener to avoid duplicates then attach
+        try { btn.removeEventListener('click', clearCollage); } catch (e) { /* ignore */ }
+        btn.addEventListener('click', clearCollage);
+      });
 
       // When page loads, restore collage
       document.addEventListener('DOMContentLoaded', function(){
