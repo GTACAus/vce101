@@ -166,31 +166,32 @@ table .image-container img {
         <h2 style="color: #4C34E5">Investigation 1: How do cells survive?</h2>
         
         
-<b>Learning intention 1: We will investigate cell activity using paramecium. </b>
+<b>Learning intention:  We will investigate cell structure and function using paramecium.</b>
 <br>
 <p style="text-align: left; font-weight: normal; margin-left: 2em;">
 Success criteria: </p>
 <ul style="text-align: left; font-weight: normal; margin-left: 1em;">
-<li>I can X</li>
-<li>I can X </li>
-<li>I can X </li></ul>
+<li>I can follow a protocol to conduct a cell biology experiment.</li>
+<li>I can use microscopy to investigate cells. </li></ul>
        <div style="margin-top: 20px;">
       <h3 style="color: #00BC74">STEM Cycle of Inquiry</h3>
   
 <img src="StemCycle.png" alt="GTAC STEM Cycle of Inquiry" style="max-width:100%; height:auto;">
 
-      
+        <h3 style="text-align: center; font-weight: normal;">Use the STEM Cycle of Inquiry to write an inquiry question about cell activity</h3>
+      <h4 style="text-align: left; font-weight: bold; margin-left;">Write your inquiry question here: </h4>
+      <textarea id="experiment2" placeholder="What type of cell activity would you like to see?"></textarea>    
 
 
-  <h3 style="color: #ff6d3a">Prepare a control slide:</h3>
+  <h2 style="color: #ff6d3a">Prepare a control slide:</h2>
 
-
+<h3> Follow the protocol to set up your slide with paramecium only.</h3>
 
   <!-- Collage uploader and preview -->
       <section aria-labelledby="collageHeading" style="margin-top:18px; text-align:left;">
   <h2 id="collageHeading" style="color: #4C34E5">Photo Collage (Max 12 images)</h2>
-  <p style="margin-top:6px;">Upload up to 12 images. The collage auto-fits layout depending on number and orientation. Drag images to reorder. <small style="display:block; color:#666;">Saved locally and will persist across reloads.</small></p>
-        <div class="collage-controls">
+  <p style="margin-top:6px;">Upload up to 12 images of your paramecium. Drag images to reorder. </p>
+  <div class="collage-controls">
           <label class="custom-upload-btn" id="collageUploadLabel">
             Add images to collage
             <input id="collageUploader" type="file" accept="image/*" multiple style="display:none;" />
@@ -279,7 +280,7 @@ Success criteria: </p>
           
          <h3 style="color: #ff6d3a">Results: Annotated dichotomous key</h3>
 
-         <!-- Add this where you want the dropdowns and table to appear -->
+
 
     <script>
       const TWELVE_HOURS = 12 * 60 * 60 * 1000;
@@ -505,16 +506,37 @@ Success criteria: </p>
         e.target.value = '';
       });
 
-      // Clear collage
-      document.getElementById('clearCollageBtn').addEventListener('click', () => {
-        if (!confirm('Clear all images from the collage?')) return;
-        openDB().then(db => {
-          const tx = db.transaction('images', 'readwrite');
-          const store = tx.objectStore('images');
-          store.delete(COLLAGE_KEY);
-          renderCollage([]);
+      // Clear collage (robust handler)
+      (function(){
+        const btn = document.getElementById('clearCollageBtn');
+        if (!btn) { console.warn('clearCollageBtn not found'); return; }
+        btn.addEventListener('click', async () => {
+          if (!confirm('Clear all images from the collage?')) return;
+          try {
+            btn.disabled = true;
+            console.log('Clearing collage...');
+            const db = await openDB();
+            const tx = db.transaction('images', 'readwrite');
+            const store = tx.objectStore('images');
+            const req = store.delete(COLLAGE_KEY);
+            req.onsuccess = function() {
+              console.log('Collage record deleted');
+              renderCollage([]);
+              alert('Collage cleared');
+            };
+            req.onerror = function(e) {
+              console.error('Failed to delete collage record', e);
+              alert('Failed to clear collage (see console)');
+            };
+            tx.oncomplete = function() { btn.disabled = false; };
+            tx.onerror = function(e) { console.error('Transaction error clearing collage', e); btn.disabled = false; };
+          } catch (err) {
+            console.error('Error clearing collage', err);
+            alert('Error clearing collage (see console)');
+            btn.disabled = false;
+          }
         });
-      });
+      })();
 
       // When page loads, restore collage
       document.addEventListener('DOMContentLoaded', function(){
