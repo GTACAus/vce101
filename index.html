@@ -90,27 +90,37 @@ table .image-container img {
   object-fit: contain;
 }
 
-.punnett-table, .punnett-table th, .punnett-table td {
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-.punnett-table th, .punnett-table td {
-  padding: 8px;
-  text-align: center;
-  background: #fff;
-}
-.punnett-table th.no-border {
-  border-top: none !important;
-  border-left: none !important;
-  background: #fff;
-}
-.punnett-table th[contenteditable="true"],
-.punnett-table td[contenteditable="true"] {
-  background-color: #eaf7ff;
-}
-.punnett-table th:not(.no-border) {
-  background-color: #f2f2f2;
-}
+      /* Collage styles */
+      .collage {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        grid-auto-rows: 140px;
+        align-items: stretch;
+        margin: 20px auto;
+        max-width: 100%;
+      }
+      .collage-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        background: #f6f8fb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: grab;
+      }
+      .collage-item.dragging { opacity: 0.5; }
+      .collage-item.drag-over { outline: 3px dashed rgba(0,123,255,0.6); }
+      .collage-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .collage-item.portrait img { object-fit: contain; }
+      .collage-controls { margin-bottom: 8px; }
+
       
     </style>
   </head>
@@ -137,6 +147,20 @@ table .image-container img {
 
       <h3>Enter Your Names:</h3>
       <textarea id="experiment1" placeholder="Type your names here"></textarea>
+
+      <!-- Collage uploader and preview -->
+      <section aria-labelledby="collageHeading" style="margin-top:18px; text-align:left;">
+        <h2 id="collageHeading" style="color: #4C34E5">Photo Collage (max 8 images)</h2>
+        <p style="margin-top:6px;">Upload up to 8 images. The collage auto-fits layout depending on number and orientation. Drag images to reorder.</p>
+        <div class="collage-controls">
+          <label class="custom-upload-btn" id="collageUploadLabel">
+            Add images to collage
+            <input id="collageUploader" type="file" accept="image/*" multiple style="display:none;" />
+          </label>
+          <button id="clearCollageBtn" class="custom-upload-btn" style="background:#dc3545; margin-left:8px;">Clear Collage</button>
+        </div>
+        <div id="collage" class="collage" aria-live="polite"></div>
+      </section>
 
 
 
@@ -181,40 +205,6 @@ Success criteria: </p>
 
 <h3 style="color: #00BC74">Part C: Measuring antibody titres with an ELISA </h3>
 
-<!-- Editable antibody prediction table -->
-<table class="punnett-table" style="margin: 30px auto; min-width: 600px;">
-  <tr>
-    <th>Week</th>
-    <th>Vaccination</th>
-    <th>Blood sample taken</th>
-    <th style="color: #ff6d3a;">Predict the expected level of antibody towards tetanus toxin<br><span style="font-weight: normal;">None / Low / High</span></th>
-  </tr>
-  <tr>
-    <td>0</td>
-    <td>First vaccination</td>
-    <td>Sample 1</td>
-    <td contenteditable="true" style="background-color: #fffbe6; color: #ff6d3a; font-weight: bold; outline: none;"></td>
-  </tr>
-  <tr>
-    <td>1</td>
-    <td>No</td>
-    <td>Sample 2</td>
-    <td contenteditable="true" style="background-color: #fffbe6; color: #ff6d3a; font-weight: bold; outline: none;"></td>
-  </tr>
-  <tr>
-    <td>6</td>
-    <td>Booster vaccination</td>
-    <td>No blood sample taken</td>
-    <td style="color: #888;">Not applicable</td>
-  </tr>
-  <tr>
-    <td>9</td>
-    <td>No</td>
-    <td>Sample 3</td>
-    <td contenteditable="true" style="background-color: #fffbe6; color: #ff6d3a; font-weight: bold; outline: none;"></td>
-  </tr>
-</table>
-
 <h2>Enzyme-Linked Immunosorbent Assay (ELISA)</h2>
 <b>Learning intention 2: I am learning to use an ELISA experiment to identify if cattle have acquired active immunity to tetanus through vaccination. </b>
 
@@ -240,69 +230,7 @@ Success criteria: </p>
 
       <h3> Complete the following results table: </h3>
       
-      <table class="punnett-table" style="margin: 30px auto; width: 98%; max-width: 1200px; min-width: 900px;">
-  <tr style="background-color: #bcd0e6;">
-    <th rowspan="2" style="width: 15%;">Time (Weeks)</th>
-    <th rowspan="2" style="width: 25%;">Results from ELISA</th>
-    <th colspan="3" style="width: 60%;">Calf</th>
-  </tr>
-  <tr style="background-color: #bcd0e6;">
-    <th style="width: 20%;">1</th>
-    <th style="width: 20%;">2</th>
-    <th style="width: 20%;">3</th>
-  </tr>
-  <tr>
-    <td rowspan="2">0<br><span style="font-weight:normal; font-size:0.9em;">(Unvaccinated)</span></td>
-    <td><span style="color:rgb(0, 0, 0);"><u>Colour</u></span> (-/+/++)</td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-  </tr>
-  <tr>
-    <td><span style="color:rgb(0, 0, 0);"><u>Antibody titre</u></span> (U/mL)</td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-  </tr>
-  <tr>
-    <td rowspan="2">1<br><span style="font-weight:normal; font-size:0.9em;">(1 week after first vaccine)</span></td>
-    <td><span style="color:rgb(0, 0, 0);"><u>Colour</u></span> (-/+/++)</td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-  </tr>
-  <tr>
-    <td><span style="color:rgb(0, 0, 0);"><u>Antibody titre</u></span> (U/mL)</td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-  </tr>
-  <tr>
-    <td rowspan="2">9<br><span style="font-weight:normal; font-size:0.9em;">(3 weeks after second vaccination)</span></td>
-    <td><span style="color:rgb(0, 0, 0);"><u>Colour</u></span> (-/+/++)</td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-  </tr>
-  <tr>
-    <td><span style="color:rgb(0, 0, 0);"><u>Antibody titre</u></span> (U/mL)</td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-    <td contenteditable="true" style="background:#f6faff;"></td>
-  </tr>
-  <tr style="background:#ffffff;">
-    <td colspan="2" style="font-weight:bold;">Recommendation:<br><span style="font-weight:normal;">Protected / Booster required / First and second vaccination required</span></td>
-    <td contenteditable="true" style="background:#cdd6ff;"></td>
-    <td contenteditable="true" style="background:#cdd6ff;"></td>
-    <td contenteditable="true" style="background:#cdd6ff;"></td>
-  </tr>
-  <tr style="background:#ffffff;">
-    <td colspan="2" style="font-weight:bold;">Justification for recommendation</td>
-    <td contenteditable="true" style="background:#cdd6ff;"></td>
-    <td contenteditable="true" style="background:#cdd6ff;"></td>
-    <td contenteditable="true" style="background:#cdd6ff;"></td>
-  </tr>
-</table>
+      
 <h3>Conclusion: </h3>
       <h3 style="text-align: left; font-weight: normal;margin-left: 1em;"> Based on the results, provide a recommendation to the farmer regarding the protection of the cows against tetanus and any follow-ups that are required.</h3>
       <textarea id="experiment5" placeholder="Type your response here"></textarea>
@@ -334,360 +262,6 @@ Success criteria: </p>
          <h3 style="color: #ff6d3a">Results: Annotated dichotomous key</h3>
 
          <!-- Add this where you want the dropdowns and table to appear -->
-<div id="test-section" style="margin: 2em 0;">
-  <label>
-    Test 1:
-    <select id="shape-select" onchange="showShapeImage()">
-      <option value="">Select...</option>
-      <option>Bacilli</option>
-      <option>Cocci</option>
-      <option>Spirilla</option>
-    </select>
-  </label>
-  <div id="shape-image-container" style="margin: 1em 0;"></div>
-  <br>
-  <label>
-    Test 2:
-    <select id="test1-select" onchange="showGramImage()">
-      <option value="">Select...</option>
-      <option>Gram negative</option>
-      <option>Gram positive</option>
-    </select>
-  </label>
-
-  <div id="gram-image-container" style="margin: 1em 0;"></div>
-  <br>
-  <label>
-    Test 3:
-    <select id="test2-select" onchange="showTest2Table()">
-      <option value="">Select...</option>
-      <option>Catalase test</option>
-      <option>Growth in air</option>
-    </select>
-  </label>
-<div id="test2-table-container"></div>
-  <br>
-  <label>
-    Test 4:
-    <select id="test3-select" onchange="showTestTable()">
-      <option value="">Select...</option>
-      <option>Beta-Haemolysis test</option>
-      <option>Coagulase test</option>
-      <option>Growth on MAC</option>
-      <option>Oxidase test</option>
-      <option>Spore Test</option>
-    </select>
-  </label>
-  <div id="test-table-container" style="margin: 1em 0;"></div>
-  <br>
-  <label>
-    Test 5:
-    <select id="test4-select">
-      <option value="">Select...</option>
-      <option>Beta-Haemolysis test</option>
-      <option>Blood test</option>
-      <option>Growth on MAC test</option>
-      <option>Motility test</option>
-      <option>Oxidase Test</option>
-      <option>Urea test</option>
-    </select>
-  </label>
-  <br><br>
-</div>
-
-<script>
-function showShapeImage() {
-  const val = document.getElementById('shape-select').value;
-  const container = document.getElementById('shape-image-container');
-  if (val === "Bacilli") {
-    container.innerHTML = `<img src="bacilli.png" alt="Bacilli" style="max-width:200px;">`;
-  } else if (val === "Cocci") {
-    container.innerHTML = `<img src="cocci.png" alt="Cocci" style="max-width:200px;">`;
-  } else if (val === "Spirilla") {
-    container.innerHTML = `<img src="spirilla.png" alt="Spirilla" style="max-width:200px;">`;
-  } else {
-    container.innerHTML = "";
-  }
-}
-function showGramImage() {
-  const val = document.getElementById('test1-select').value;
-  const container = document.getElementById('gram-image-container');
-  if (val === "Gram negative") {
-    container.innerHTML = `<img src="gram-ve.png" alt="Gram Negative" style="max-width:200px;">`;
-  } else if (val === "Gram positive") {
-    container.innerHTML = `<img src="gram+ve.png" alt="Gram Positive" style="max-width:200px;">`;
-  } else {
-    container.innerHTML = "";
-  }
-}
-function showTestTable() {
-  const val = document.getElementById('test3-select').value;
-  const container = document.getElementById('test-table-container');
-
-  let tableHTML = "";
-
-  if (val === "Beta-Haemolysis test") {
-    tableHTML = `
-      <h3 style="text-align:left;">Beta-Haemolysis Test</h3>
-      <table style="width:100%; min-width:400px; max-width:600px; margin: 0 auto;">
-        <tr style="background:#7eaadc; color:#222;">
-          <th></th>
-          <th>Positive<br>control</th>
-          <th>Negative<br>control</th>
-          <th>Test<br><span style="font-weight:normal;">(Disease-causing bacteria)</span></th>
-        </tr>
-        <tr>
-          <td style="background:#e6f0fa; font-weight:bold;">Transparent zone around colonies<br><span style="font-weight:normal;">(Yes/No)</span></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-        </tr>
-      </table>
-    `;
-  }
-
-  else if (val === "Coagulase test") {
-
-    tableHTML = `
-      <h3 style="text-align:left;">Coagulase Test</h3>
-      <table style="width:100%; min-width:400px; max-width:600px; margin: 0 auto;">
-        <tr style="background:#7eaadc; color:#222;">
-          <th></th>
-          <th>Positive<br>control</th>
-          <th>Negative<br>control</th>
-          <th>Test<br><span style="font-weight:normal;">(Disease-causing bacteria)</span></th>
-        </tr>
-        <tr>
-          <td style="background:#e6f0fa; font-weight:bold;">Coagulation<br><span style="font-weight:normal;">(Yes/No)</span></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-        </tr>
-      </table>
-    `;
-  }
-
-  else if (val === "Growth on MAC") {
-
-    tableHTML = `
-      <h3 style="text-align:left;">Growth on MAC Test</h3>
-      <table style="width:100%; min-width:400px; max-width:600px; margin: 0 auto;">
-        <tr style="background:#7eaadc; color:#222;">
-          <th></th>
-          <th>Positive<br>control</th>
-          <th>Negative<br>control</th>
-          <th>Test<br><span style="font-weight:normal;">(Disease-causing bacteria)</span></th>
-        </tr>
-        <tr>
-          <td style="background:#e6f0fa; font-weight:bold;">Grows on MAC agar<br><span style="font-weight:normal;">(Yes/No)</span></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-        </tr>
-      </table>
-    `;
-  }
-
-  else if (val === "Oxidase test") {
-
-    tableHTML = `
-      <h3 style="text-align:left;">Oxidase Test</h3>
-      <table style="width:100%; min-width:400px; max-width:600px; margin: 0 auto;">
-        <tr style="background:#7eaadc; color:#222;">
-          <th></th>
-          <th>Positive<br>control</th>
-          <th>Negative<br>control</th>
-          <th>Test<br><span style="font-weight:normal;">(Disease-causing bacteria)</span></th>
-        </tr>
-        <tr>
-          <td style="background:#e6f0fa; font-weight:bold;">Purple/blue color change<br><span style="font-weight:normal;">(Yes/No)</span></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-        </tr>
-      </table>
-    `;
-  }
-
-  else if (val === "Spore Test") {
-
-    tableHTML = `
-      <h3 style="text-align:left;">Spore Test</h3>
-      <table style="width:100%; min-width:400px; max-width:600px; margin: 0 auto;">
-        <tr style="background:#7eaadc; color:#222;">
-          <th></th>
-          <th>Positive<br>control</th>
-          <th>Negative<br>control</th>
-          <th>Test<br><span style="font-weight:normal;">(Disease-causing bacteria)</span></th>
-        </tr>
-        <tr>
-          <td style="background:#e6f0fa; font-weight:bold;">Endospores visible after special staining<br><span style="font-weight:normal;">(Yes/No)</span></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-        </tr>
-      </table>
-    `;
-  }
-
-  container.innerHTML = tableHTML;
-}
-function showTest2Table() {
-  const val = document.getElementById('test2-select').value;
-  const container = document.getElementById('test2-table-container');
-
-  let tableHTML = "";
-
-  if (val === "Catalase test") {
-        tableHTML = `
-      <h3 style="text-align:left;">Catalase Test</h3>
-      <table style="width:100%; min-width:400px; max-width:600px; margin: 0 auto;">
-        <tr style="background:#7eaadc; color:#222;">
-          <th></th>
-          <th>Positive<br>control</th>
-          <th>Negative<br>control</th>
-          <th>Test<br><span style="font-weight:normal;">(Disease-causing bacteria)</span></th>
-        </tr>
-        <tr>
-          <td style="background:#e6f0fa; font-weight:bold;">Bubbles present<br><span style="font-weight:normal;">(Yes/No)</span></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-        </tr>
-      </table>
-    `;
-  }
-
-  else if (val === "Growth in air") {
-        tableHTML = `
-      <h3 style="text-align:left;">Growth in air Test</h3>
-      <table style="width:100%; min-width:400px; max-width:600px; margin: 0 auto;">
-        <tr style="background:#7eaadc; color:#222;">
-          <th></th>
-          <th>Positive<br>control</th>
-          <th>Negative<br>control</th>
-          <th>Test<br><span style="font-weight:normal;">(Disease-causing bacteria)</span></th>
-        </tr>
-        <tr>
-          <td style="background:#e6f0fa; font-weight:bold;">Visible growth<br><span style="font-weight:normal;">(Yes/No)</span></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-          <td contenteditable="true" style="background:#f6faff;"></td>
-        </tr>
-      </table>
-    `;
-  }
-
-  container.innerHTML = tableHTML;
-}
-</script>
-
-<p style="text-align: left; font-weight: bold;"> Type the name of the disease-causing bacteria below:</p>
-<textarea id="experiment6" 
-          placeholder="Type OR Copy and paste the name of the bacteria from the list here"></textarea> 
-
-        <h3 style="color: #00BC74">
-          Part B: Identifying an effective antibiotic
-        </h3>
-
-        <table style="align: center; border-collapse: collapse; min-width: 350px; font-family: inherit, sans-serif;">
-  <tr style="background: #d6f5e6;">
-    <th style="border: 2px solid #24704b; padding: 8px;">&nbsp;</th>
-    <th style="border: 2px solid #24704b; padding: 8px;">Antibiotic</th>
-    <th style="border: 2px solid #24704b; padding: 8px;">Growth?</th>
-  </tr>
-  <tr style="background: #fcfaed;">
-    <td style="border: 2px solid #24704b; padding: 8px; text-align: center;">
-      <span style="display:inline-block; border-radius:50%; border:1.5px solid #bbb; width:28px; height:28px; line-height:28px; font-weight:bold;">P</span>
-    </td>
-    <td style="border: 2px solid #24704b; padding: 8px; font-weight: bold;">Penicillin</td>
-    <td style="border: 2px solid #24704b; padding: 8px;" contenteditable="true"></td>
-  </tr>
-  <tr style="background: #fcfaed;">
-    <td style="border: 2px solid #24704b; padding: 8px; text-align: center;">
-      <span style="display:inline-block; border-radius:50%; border:1.5px solid #bbb; width:28px; height:28px; line-height:28px; font-weight:bold;">TE</span>
-    </td>
-    <td style="border: 2px solid #24704b; padding: 8px; font-weight: bold;">Tetracycline</td>
-    <td style="border: 2px solid #24704b; padding: 8px;" contenteditable="true"></td>
-  </tr>
-  <tr style="background: #fcfaed;">
-    <td style="border: 2px solid #24704b; padding: 8px; text-align: center;">
-      <span style="display:inline-block; border-radius:50%; border:1.5px solid #bbb; width:28px; height:28px; line-height:28px; font-weight:bold;">C</span>
-    </td>
-    <td style="border: 2px solid #24704b; padding: 8px; font-weight: bold;">Cloxacillin</td>
-    <td style="border: 2px solid #24704b; padding: 8px;" contenteditable="true"></td>
-  </tr>
-  <tr style="background: #fcfaed;">
-    <td style="border: 2px solid #24704b; padding: 8px; text-align: center;">
-      <span style="display:inline-block; border-radius:50%; border:1.5px solid #bbb; width:28px; height:28px; line-height:28px; font-weight:bold;">ST</span>
-    </td>
-    <td style="border: 2px solid #24704b; padding: 8px; font-weight: bold;">Sulfatriad</td>
-    <td style="border: 2px solid #24704b; padding: 8px;" contenteditable="true"></td>
-  </tr>
-</table>
-
-<p style="text-align: left; font-weight: bold;"> Select the antibiotic that can be used to treat mastitis:  </p>
-<textarea id="experiment7" 
-          placeholder="Type the name of the antibiotic you will use to treat mastitis"></textarea> 
-      <h3 style="color: #00BC74"> Part C: Determining the bacteriostatic dose </h3>
-
-      
-<h3 style="color: #ff6d3a"> Results: Spectrophotometer readings:</h3>
-  <p> Take a picture of the table of absorbance values on your computer.  </p>
-   
-      <label class="custom-upload-btn">
-        Upload image of the data here
-        <input type="file" accept="image/*" onchange="addUploadedImage(event, 'imageContainer4')" style="display:none;" />
-      </label>
-      <div id="imageContainer4" class="image-container"></div>
-   
-
-       <p> Graph showing the effect of Cloxacillin on S. epidermidis.  </p>
-   
-      <label class="custom-upload-btn">
-        Upload image of data here
-        <input type="file" accept="image/*" onchange="addUploadedImage(event, 'imageContainer5')" style="display:none;" />
-      </label>
-      <div id="imageContainer5" class="image-container"></div>
-
-<p style="text-align: left; font-weight: bold;">1.  Define what it means to provide a 'bacteriostatic dose' vs. a 'bactericidal dose'.
-  <br> 2. Can you identify the bacteriostatic and bactericidal doses for your results? </br>
-</p>
-<textarea id="experiment8"
-          placeholder="A bacteriostatic dose is... Whereas a bactericidal dose is..."></textarea> 
-
-<p style="text-align: left; font-weight: bold;"> 3. Using your results, which dose would you choose and why? 
-  <br> 4. Why is it important to get the correct dosage?
-</p>
-<textarea id="experiment9"
-          placeholder="A bacteriostatic dose is... Whereas a bactericidal dose is..."></textarea> 
-
-
-      <h3 style="color: #00BC74"> Part D: Determining the bactericidal dose</h3>
-   <p style="text-align: center; font-weight: bold;"> Bactericidal testing and analysis </p>
-
-      <label class="custom-upload-btn">
-        Upload image of growth plates here
-        <input type="file" accept="image/*" onchange="addUploadedImage(event, 'imageContainer6')" style="display:none;" />
-      </label>
-      <div id="imageContainer6" class="image-container"></div>
-       <p> Use the space below to interpret the growth plates: </p>
-      <textarea
-          id="experiment8"
-          placeholder="Type your response here"></textarea>
-  
-        <div id="exp3" class="experiment">
-          <h2 style="color: #4C34E5">Note-taking</h2>
-         <p> Use the space below to type any additional notes: </p>
-         
-      
-        <textarea id="experiment10"
-          placeholder="Type your notes here"
-        ></textarea>
-
-        </div>
-      </div>
-    </div>
 
     <script>
       const TWELVE_HOURS = 12 * 60 * 60 * 1000;
@@ -755,13 +329,24 @@ function showTest2Table() {
             const currentTime = Date.now();
 
             images.forEach((imageEntry) => {
-              // Check if within expiry
-              if (currentTime - imageEntry.timestamp <= IMAGE_EXPIRY) {
-                // Display each image in the correct container
-                displayImage(imageEntry.image, imageEntry.containerId);
-              } else {
-                // Remove expired images
-                removeImageFromDB(imageEntry.id);
+              // If this entry is a collage (stores an array)
+              if (imageEntry && Array.isArray(imageEntry.collage)) {
+                // Check expiry and render collage
+                if (currentTime - imageEntry.timestamp <= IMAGE_EXPIRY) {
+                  try { renderCollage(imageEntry.collage); } catch (e) { console.warn('renderCollage missing', e); }
+                } else {
+                  removeImageFromDB(imageEntry.id);
+                }
+                return;
+              }
+
+              // Otherwise expect a single image entry with containerId and image
+              if (imageEntry && imageEntry.image && imageEntry.containerId) {
+                if (currentTime - imageEntry.timestamp <= IMAGE_EXPIRY) {
+                  displayImage(imageEntry.image, imageEntry.containerId);
+                } else {
+                  removeImageFromDB(imageEntry.id);
+                }
               }
             });
           };
@@ -792,6 +377,138 @@ function showTest2Table() {
           container.appendChild(image);
         }
       }
+
+      // ---------------- Collage support ----------------
+      const COLLAGE_KEY = 'collage_images'; // key in IndexedDB store
+      const MAX_COLLAGE = 8;
+
+      // Save collage array (ordered) to IndexedDB as a single record
+      function saveCollageToDB(collageArray) {
+        openDB().then(db => {
+          const tx = db.transaction('images', 'readwrite');
+          const store = tx.objectStore('images');
+          const id = COLLAGE_KEY;
+          const entry = { id: id, collage: collageArray, timestamp: Date.now() };
+          store.put(entry);
+        }).catch(e => console.error('DB save collage failed', e));
+      }
+
+      // Load collage record from DB
+      function loadCollageFromDB() {
+        return openDB().then(db => new Promise((resolve, reject) => {
+          const tx = db.transaction('images', 'readonly');
+          const store = tx.objectStore('images');
+          const req = store.get(COLLAGE_KEY);
+          req.onsuccess = () => resolve(req.result ? req.result.collage : null);
+          req.onerror = () => reject(req.error);
+        }));
+      }
+
+      // Render collage array (each item: {id, dataURL})
+      function renderCollage(collageArray) {
+        const grid = document.getElementById('collage');
+        grid.innerHTML = '';
+        if (!collageArray || collageArray.length === 0) return;
+
+        collageArray.forEach((item, index) => {
+          const cell = document.createElement('div');
+          cell.className = 'collage-item';
+          cell.draggable = true;
+          cell.dataset.index = index;
+
+          const img = document.createElement('img');
+          img.src = item.data;
+          img.alt = `Photo ${index+1}`;
+
+          // detect orientation after image loads
+          img.onload = function() {
+            const isPortrait = img.naturalHeight > img.naturalWidth;
+            if (isPortrait) cell.classList.add('portrait');
+          };
+
+          cell.appendChild(img);
+
+          // drag events
+          cell.addEventListener('dragstart', (e) => {
+            cell.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', index);
+            e.dataTransfer.effectAllowed = 'move';
+          });
+          cell.addEventListener('dragend', () => cell.classList.remove('dragging'));
+
+          cell.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            cell.classList.add('drag-over');
+          });
+          cell.addEventListener('dragleave', () => cell.classList.remove('drag-over'));
+          cell.addEventListener('drop', (e) => {
+            e.preventDefault();
+            cell.classList.remove('drag-over');
+            const fromIndex = Number(e.dataTransfer.getData('text/plain'));
+            const toIndex = Number(cell.dataset.index);
+            if (!Number.isNaN(fromIndex)) {
+              const newArr = Array.from(collageArray);
+              const [moved] = newArr.splice(fromIndex,1);
+              newArr.splice(toIndex,0,moved);
+              // re-render and save
+              renderCollage(newArr);
+              saveCollageToDB(newArr);
+            }
+          });
+
+          grid.appendChild(cell);
+        });
+      }
+
+      // Handle adding files to collage
+      document.getElementById('collageUploader').addEventListener('change', function(e){
+        const files = Array.from(e.target.files || []);
+        if (!files.length) return;
+
+        loadCollageFromDB().then(existing => {
+          const collage = existing ? existing.slice() : [];
+          const space = MAX_COLLAGE - collage.length;
+          if (files.length > space) {
+            alert(`You can only add ${space} more image(s) to reach the maximum of ${MAX_COLLAGE}.`);
+          }
+          const toTake = files.slice(0, space);
+          let processed = 0;
+          toTake.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              collage.push({ id: Date.now() + '_' + Math.random().toString(36).slice(2,7), data: ev.target.result });
+              processed++;
+              if (processed === toTake.length) {
+                renderCollage(collage);
+                saveCollageToDB(collage);
+              }
+            };
+            reader.readAsDataURL(file);
+          });
+        }).catch(err => {
+          console.error('Load collage failed', err);
+        });
+        // reset input
+        e.target.value = '';
+      });
+
+      // Clear collage
+      document.getElementById('clearCollageBtn').addEventListener('click', () => {
+        if (!confirm('Clear all images from the collage?')) return;
+        openDB().then(db => {
+          const tx = db.transaction('images', 'readwrite');
+          const store = tx.objectStore('images');
+          store.delete(COLLAGE_KEY);
+          renderCollage([]);
+        });
+      });
+
+      // When page loads, restore collage
+      document.addEventListener('DOMContentLoaded', function(){
+        loadCollageFromDB().then(collage => {
+          if (Array.isArray(collage)) renderCollage(collage);
+        }).catch(e => console.error('Restore collage failed', e));
+      });
 
       // Modified Upload Image Function to Store in IndexedDB
       function addUploadedImage(event, containerId) {
