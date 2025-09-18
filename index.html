@@ -71,16 +71,16 @@ table .image-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 140px;
-  min-width: 140px;
-  height: 140px;
-  width: 140px;
+  min-height: 180px;
+  min-width: 180px;
+  height: 180px;
+  width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
 }
 table .image-container img {
-  max-width: 120px;
-  max-height: 120px;
+  max-width: 95%;
+  max-height: 170px;
   width: auto;
   height: auto;
   display: block;
@@ -190,14 +190,63 @@ Success criteria: </p>
 <img src="ProtocolControl.png" alt="Paramecium protocol" style="max-width:90%; height:auto;">
 
 <h2 style="color: #4C34E5">EXPERIMENTAL SETUP: </h2>
-  
-  <p><strong>Your investigation:</strong> Choose a protocol that will help you answer your inquiry question</p>
+<p><strong>Your investigation:</strong> Choose a protocol that will help you answer your inquiry question</p>
 
+<!-- Protocol Buttons Row -->
+<div style="display: flex; justify-content: center; gap: 16px; margin: 18px 0;">
+  <button class="protocol-btn" type="button" onclick="showProtocolImage('ProtocolStain.png', 'Protocol 1: Staining methods')">Protocol 1: Staining methods</button>
+  <button class="protocol-btn" type="button" onclick="showProtocolImage('ProtocolOrganelle.png', 'Protocol 2: Observing Organelles')">Protocol 2: Observing Organelles</button>
+  <button class="protocol-btn" type="button" onclick="showProtocolImage('ProtocolOrganisms.png', 'Protocol 3: Introducing other organisms')">Protocol 3: Introducing other organisms</button>
+</div>
+
+
+<h2> Results: </h2>
+<p style="font-size: 1.2em; text-align: center;"> Upload images to compare your control slide to the experimental setup. </p>
+<!-- Subtle 2x2 Table for Uploads -->
+<div style="margin: 24px 0;">
+  <table style="border-collapse: separate; border-spacing: 0; width: 100%; max-width: 100%; box-shadow: none; table-layout: fixed;">
+    <tr>
+  <td style="width:50%; text-align: center; font-weight: bold; background: #f8f8f8; padding: 10px 0; border-right: 2px solid #ccc;">Control slide</td>
+  <td style="width:50%; text-align: center; font-weight: bold; background: #f8f8f8; padding: 10px 0;">Experiment slide</td>
+    </tr>
+    <tr>
+  <td style="width:50%; text-align: center; border-right: 2px solid #ccc; padding: 18px 0;">
+        <label class="custom-upload-btn">
+          Upload image
+          <input type="file" accept="image/*" onchange="addUploadedImage(event, 'controlSlideImg')" style="display:none;" />
+        </label>
+        <div id="controlSlideImg" class="image-container"></div>
+      </td>
+  <td style="width:50%; text-align: center; padding: 18px 0;">
+        <label class="custom-upload-btn">
+          Upload image
+          <input type="file" accept="image/*" onchange="addUploadedImage(event, 'experimentSlideImg')" style="display:none;" />
+        </label>
+        <div id="experimentSlideImg" class="image-container"></div>
+      </td>
+    </tr>
+  </table>
+</div>
+<div id="protocolModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:2000; justify-content:center; align-items:center;">
+  <div style="background:white; padding:24px; border-radius:10px; box-shadow:0 4px 16px rgba(0,0,0,0.2); text-align:center; position:relative; max-width:90vw; max-height:90vh;">
+    <span style="position:absolute; top:10px; right:18px; font-size:24px; cursor:pointer;" onclick="closeProtocolModal()">&times;</span>
+    <h2 id="protocolModalTitle" style="margin-bottom:12px;"></h2>
+    <img id="protocolModalImg" src="" alt="Protocol" style="max-width:80vw; max-height:60vh; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+  </div>
+</div>
+
+
+
+
+<h3> Conclusions: </h3>
+<h4 style="text-align: left; font-weight: bold; margin-left: 1em;">Describe what you observed in your experimental setup and how it helped you answer your inquiry question.
+</h4>
+<textarea id="experiment3" placeholder="Answer your inquiry question here"></textarea>
 
   <!-- Collage uploader and preview -->
       <section aria-labelledby="collageHeading" style="margin-top:18px; text-align:left;">
-  <h2 id="collageHeading" style="color: #000000">Photo Collage (Max 12 images)</h2>
-  <p style="margin-top:6px;">Upload up to 12 images of your paramecium. Drag images to reorder. </p>
+  <h2 id="collageHeading" style="color: #000000">Add additional photos of your experiment here (maximum 12 photos)</h2>
+  <p style="margin-top:6px;">Upload up to 12 images to the photo collage. Drag images to reorder. </p>
   <div class="collage-controls">
           <label class="custom-upload-btn" id="collageUploadLabel">
             Add images to collage
@@ -208,6 +257,8 @@ Success criteria: </p>
         <div id="collage" class="collage" aria-live="polite"></div>
       </section>
 
+
+      //////////////////////////////
   <p> Use the model to show the key players and their role in the immune response.  </p>
  <br>
    
@@ -221,11 +272,9 @@ Success criteria: </p>
 
 <h3 style="color: #00BC74">Part B: Modelling the immune response to vaccination  </h3>
       <h3 style="text-align: center; font-weight: normal;">Summarise the primary and secondary immune response</h3>
-      <h4 style="text-align: left; font-weight: bold; margin-left: 1em;">A. Explain why the cow dies despite starting to produce antibodies to the tetanus toxin.</h4>
-      <textarea id="experiment2" placeholder="Type your response here"></textarea>
-      <h4 style="text-align: left; font-weight: bold; margin-left: 1em;">B. Explain why the calf could still die from tetanus after one vaccination.
-</h4>
-      <textarea id="experiment3" placeholder="Type your response here"></textarea>
+
+
+      
       <h4 style="text-align: left; font-weight: bold; margin-left: 1em;">C. Compare and contrast the primary and secondary immune response.</h4>
       <textarea id="experiment4" placeholder="Type your response here"></textarea>
 
@@ -290,6 +339,24 @@ Success criteria: </p>
 
 
     <script>
+    // Protocol Modal Logic
+    function showProtocolImage(imgSrc, title) {
+      var modal = document.getElementById('protocolModal');
+      var img = document.getElementById('protocolModalImg');
+      var modalTitle = document.getElementById('protocolModalTitle');
+      img.src = imgSrc;
+      img.alt = title;
+      modalTitle.textContent = title;
+      modal.style.display = 'flex';
+    }
+    function closeProtocolModal() {
+      var modal = document.getElementById('protocolModal');
+      modal.style.display = 'none';
+      var img = document.getElementById('protocolModalImg');
+      img.src = '';
+      img.alt = '';
+      document.getElementById('protocolModalTitle').textContent = '';
+    }
       const TWELVE_HOURS = 12 * 60 * 60 * 1000;
       // ------------------------------------------------------------------------
       // Scroll to Section Function
@@ -831,6 +898,23 @@ Success criteria: </p>
     </div>
 
     <style>
+    .protocol-btn {
+      background: #00bc74;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 18px;
+      font-family: inherit;
+      font-size: 1em;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      outline: none;
+      box-shadow: none;
+    }
+    .protocol-btn:hover {
+      background: #009e5f;
+    }
       /* Overlay Styling */
       .overlay {
         display: none;
