@@ -93,12 +93,23 @@ table .image-container img {
       /* Collage styles */
       .collage {
         display: grid;
-        gap: 8px;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        grid-auto-rows: 140px;
+        gap: 12px;
+        /* On wider screens force 4 columns so layout is exactly 4x3 for 12 images */
+        grid-template-columns: repeat(4, 1fr);
+        /* larger cells to give each photo more space */
+        grid-auto-rows: 220px;
         align-items: stretch;
         margin: 20px auto;
-        max-width: 100%;
+        /* limit width so 4 columns are comfortable */
+        max-width: 960px; /* 4 * ~220px columns */
+      }
+      /* Responsive fallback: on narrow screens, switch to auto-fit */
+      @media (max-width: 900px) {
+        .collage {
+          grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+          grid-auto-rows: 150px;
+          max-width: 100%;
+        }
       }
       .collage-item {
         position: relative;
@@ -148,19 +159,6 @@ table .image-container img {
       <h3>Enter Your Names:</h3>
       <textarea id="experiment1" placeholder="Type your names here"></textarea>
 
-      <!-- Collage uploader and preview -->
-      <section aria-labelledby="collageHeading" style="margin-top:18px; text-align:left;">
-        <h2 id="collageHeading" style="color: #4C34E5">Photo Collage (max 8 images)</h2>
-        <p style="margin-top:6px;">Upload up to 8 images. The collage auto-fits layout depending on number and orientation. Drag images to reorder.</p>
-        <div class="collage-controls">
-          <label class="custom-upload-btn" id="collageUploadLabel">
-            Add images to collage
-            <input id="collageUploader" type="file" accept="image/*" multiple style="display:none;" />
-          </label>
-          <button id="clearCollageBtn" class="custom-upload-btn" style="background:#dc3545; margin-left:8px;">Clear Collage</button>
-        </div>
-        <div id="collage" class="collage" aria-live="polite"></div>
-      </section>
 
 
 
@@ -181,7 +179,27 @@ Success criteria: </p>
   
 <img src="StemCycle.png" alt="GTAC STEM Cycle of Inquiry" style="max-width:100%; height:auto;">
 
-  <h3 style="color: #ff6d3a">Upload image of your immune response model:</h3>
+      
+
+
+  <h3 style="color: #ff6d3a">Prepare a control slide:</h3>
+
+
+
+  <!-- Collage uploader and preview -->
+      <section aria-labelledby="collageHeading" style="margin-top:18px; text-align:left;">
+  <h2 id="collageHeading" style="color: #4C34E5">Photo Collage (Max 12 images)</h2>
+  <p style="margin-top:6px;">Upload up to 12 images. The collage auto-fits layout depending on number and orientation. Drag images to reorder. <small style="display:block; color:#666;">Saved locally and will persist across reloads.</small></p>
+        <div class="collage-controls">
+          <label class="custom-upload-btn" id="collageUploadLabel">
+            Add images to collage
+            <input id="collageUploader" type="file" accept="image/*" multiple style="display:none;" />
+          </label>
+          <button id="clearCollageBtn" class="custom-upload-btn" style="background:#dc3545; margin-left:8px;">Clear Collage</button>
+        </div>
+        <div id="collage" class="collage" aria-live="polite"></div>
+      </section>
+
   <p> Use the model to show the key players and their role in the immune response.  </p>
  <br>
    
@@ -329,18 +347,13 @@ Success criteria: </p>
             const currentTime = Date.now();
 
             images.forEach((imageEntry) => {
-              // If this entry is a collage (stores an array)
+              // If this entry is a collage (stores an array), always restore it so collage persists
               if (imageEntry && Array.isArray(imageEntry.collage)) {
-                // Check expiry and render collage
-                if (currentTime - imageEntry.timestamp <= IMAGE_EXPIRY) {
-                  try { renderCollage(imageEntry.collage); } catch (e) { console.warn('renderCollage missing', e); }
-                } else {
-                  removeImageFromDB(imageEntry.id);
-                }
+                try { renderCollage(imageEntry.collage); } catch (e) { console.warn('renderCollage missing', e); }
                 return;
               }
 
-              // Otherwise expect a single image entry with containerId and image
+              // Otherwise expect a single image entry with containerId and image (subject to expiry)
               if (imageEntry && imageEntry.image && imageEntry.containerId) {
                 if (currentTime - imageEntry.timestamp <= IMAGE_EXPIRY) {
                   displayImage(imageEntry.image, imageEntry.containerId);
@@ -380,7 +393,7 @@ Success criteria: </p>
 
       // ---------------- Collage support ----------------
       const COLLAGE_KEY = 'collage_images'; // key in IndexedDB store
-      const MAX_COLLAGE = 8;
+  const MAX_COLLAGE = 12;
 
       // Save collage array (ordered) to IndexedDB as a single record
       function saveCollageToDB(collageArray) {
