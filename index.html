@@ -157,10 +157,6 @@ table .image-container img {
 
       <h3>Enter Your Names:</h3>
       <textarea id="experiment1" placeholder="Type your names here"></textarea>
-
-
-
-
       <div id="exp1" class="experiment active">
         <h2 style="color: #4C34E5">Investigation 1: How do cells survive?</h2>
         
@@ -173,7 +169,20 @@ Success criteria: </p>
 <li>I can follow a protocol to conduct a cell biology experiment.</li>
 <li>I can use microscopy to investigate cells. </li></ul>
        <div style="margin-top: 20px;">
-      <h3 style="color: #00BC74">STEM Cycle of Inquiry</h3>
+
+  <h2 style="color: #ff6d3a">Background information: Cells </h2>
+<p> Match the cell organelles to its function and take a photo of the completed cell diagram here.</p>
+    
+      <div style="margin-top:12px; text-align:center;">
+        <label class="custom-upload-btn">
+          Upload photo of cell diagram here
+          <input type="file" accept="image/*" onchange="addUploadedImage(event, 'singleUploadImg')" style="display:none;" />
+        </label>
+        <div id="singleUploadImg" class="image-container" style="margin-top:10px;"></div>
+      </div>
+
+
+      <h2 style="color: #00BC74">STEM Cycle of Inquiry</h2>
   
 <img src="StemCycle.png" alt="GTAC STEM Cycle of Inquiry" style="max-width:70%; height:auto;">
 
@@ -226,13 +235,6 @@ Success criteria: </p>
     </tr>
   </table>
 </div>
-<div id="protocolModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:2000; justify-content:center; align-items:center;">
-  <div style="background:white; padding:24px; border-radius:10px; box-shadow:0 4px 16px rgba(0,0,0,0.2); text-align:center; position:relative; max-width:90vw; max-height:90vh;">
-    <span style="position:absolute; top:10px; right:18px; font-size:24px; cursor:pointer;" onclick="closeProtocolModal()">&times;</span>
-    <h2 id="protocolModalTitle" style="margin-bottom:12px;"></h2>
-    <img id="protocolModalImg" src="" alt="Protocol" style="max-width:80vw; max-height:60vh; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-  </div>
-</div>
 
 
 
@@ -277,7 +279,7 @@ Success criteria: </p>
 you think may be malfunctioning. </h3>
       <textarea id="experiment4" placeholder="Type your response here"></textarea>
       <br>
-      <h3 style="text-align: left; font-weight: bold; margin-left: 1em;">How you will test your hypothesis: </h3>
+
 <img src="exp2overview.png" alt="How you will test your hypothesis" style="max-width: 90%; height:auto">
 
 <h2 style="color: #00BC74"> Results:</h2>
@@ -294,16 +296,16 @@ you think may be malfunctioning. </h3>
   <td style="width:50%; text-align: center; border-right: 2px solid #ccc; padding: 18px 0;">
         <label class="custom-upload-btn">
           Upload image of healthy cells here
-          <input type="file" accept="image/*" onchange="addUploadedImage(event, 'controlSlideImg')" style="display:none;" />
+          <input type="file" accept="image/*" onchange="addUploadedImage(event, 'controlSlideImg2')" style="display:none;" />
         </label>
-        <div id="controlSlideImg" class="image-container"></div>
+        <div id="controlSlideImg2" class="image-container"></div>
       </td>
   <td style="width:50%; text-align: center; padding: 18px 0;">
         <label class="custom-upload-btn">
           Upload image of diseased cells here
-          <input type="file" accept="image/*" onchange="addUploadedImage(event, 'experimentSlideImg')" style="display:none;" />
+          <input type="file" accept="image/*" onchange="addUploadedImage(event, 'experimentSlideImg2')" style="display:none;" />
         </label>
-        <div id="experimentSlideImg" class="image-container"></div>
+        <div id="experimentSlideImg2" class="image-container"></div>
       </td>
     </tr>
   </table>
@@ -321,7 +323,7 @@ you think may be malfunctioning. </h3>
       <textarea id="experiment5" placeholder="Type your response here"></textarea>
       <br>
 
-      Genetic samples were acquired and analysed at the protein-level. <a href="https://gtacaus.github.io/vce101-mitochondria" target="_blank">Access the resource here</a>
+      Genetic samples were acquired and analysed at the protein-level. Access the resource here <a href="https://gtacaus.github.io/vce101-mitochondria" target="_blank">Access VCE101 Mitochondria</a>
       <h3 style="text-align: left; font-weight: bold; margin-left: 1em;"> Outline what you have observed from genetic testing of the patients. </h3>
       <textarea id="experiment6" placeholder="Patient 1: ..."></textarea>
         
@@ -383,13 +385,14 @@ you think may be malfunctioning. </h3>
       }
 
       // Save Image to IndexedDB
+      // Save Image to IndexedDB - returns a Promise resolving to the generated id
       function saveImageToDB(containerId, imageData) {
-        openDB().then((db) => {
+        return openDB().then((db) => new Promise((resolve, reject) => {
           const transaction = db.transaction("images", "readwrite");
           const store = transaction.objectStore("images");
 
           // Generate a unique key for each image
-          const uniqueId = containerId + "_" + Date.now();
+          const uniqueId = containerId + "_" + Date.now() + "_" + Math.random().toString(36).slice(2,7);
 
           const imageEntry = {
             id: uniqueId, // Unique key
@@ -398,8 +401,10 @@ you think may be malfunctioning. </h3>
             timestamp: Date.now(),
           };
 
-          store.put(imageEntry);
-        });
+          const req = store.put(imageEntry);
+          req.onsuccess = function () { resolve(uniqueId); };
+          req.onerror = function (e) { console.error('saveImageToDB put failed', e); reject(e); };
+        })).catch(e => { console.error('saveImageToDB failed', e); throw e; });
       }
 
       // Retrieve and Restore Images from IndexedDB
@@ -443,7 +448,8 @@ you think may be malfunctioning. </h3>
       }
 
       // Function to Display Image in its Container
-      function displayImage(imageData, containerId) {
+      // displayImage accepts an optional imageId to attach as data attribute
+      function displayImage(imageData, containerId, imageId) {
         const container = document.getElementById(containerId);
         if (container) {
           // Only clear if it is NOT container 3
@@ -454,6 +460,10 @@ you think may be malfunctioning. </h3>
           const image = document.createElement("img");
           image.src = imageData;
           image.style.maxWidth = "100%";
+          if (imageId) {
+            image.dataset.imageId = imageId; // e.g. "imageContainer1_170..."
+            try { image.id = imageId; } catch (e) { /* ignore invalid id char errors */ }
+          }
           container.appendChild(image);
         }
       }
@@ -499,6 +509,8 @@ you think may be malfunctioning. </h3>
           const img = document.createElement('img');
           img.src = item.data;
           img.alt = `Photo ${index+1}`;
+          // attach the stored identifier so it's visible in DOM
+          if (item.id) img.dataset.imageId = item.id;
 
           // detect orientation after image loads
           img.onload = function() {
@@ -556,7 +568,9 @@ you think may be malfunctioning. </h3>
           toTake.forEach(file => {
             const reader = new FileReader();
             reader.onload = (ev) => {
-              collage.push({ id: Date.now() + '_' + Math.random().toString(36).slice(2,7), data: ev.target.result });
+              // create a stable id for the collage item
+              const itemId = Date.now() + '_' + Math.random().toString(36).slice(2,7);
+              collage.push({ id: itemId, data: ev.target.result });
               processed++;
               if (processed === toTake.length) {
                 renderCollage(collage);
@@ -622,18 +636,24 @@ you think may be malfunctioning. </h3>
       });
 
       // Modified Upload Image Function to Store in IndexedDB
-      function addUploadedImage(event, containerId) {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const imageData = e.target.result;
-            saveImageToDB(containerId, imageData); // Save each image with a unique ID
-            displayImage(imageData, containerId); // Append the image in the UI
-          };
-          reader.readAsDataURL(file);
+        function addUploadedImage(event, containerId) {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const imageData = e.target.result;
+              // Save image and get back the generated id, then display with that id
+              saveImageToDB(containerId, imageData).then((generatedId) => {
+                displayImage(imageData, containerId, generatedId);
+              }).catch((err) => {
+                // On failure still display (no id)
+                console.warn('saveImageToDB failed, displaying without id', err);
+                displayImage(imageData, containerId, null);
+              });
+            };
+            reader.readAsDataURL(file);
+          }
         }
-      }
 
       // Restore Images on Page Load
       document.addEventListener("DOMContentLoaded", function () {
