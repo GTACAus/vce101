@@ -1,0 +1,254 @@
+<meta charset="utf-8">
+<title>Cellula Institute Program Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&display=swap">
+<style>
+/* GTAC brand (vibe.gtac.edu.au): eggshell page, Figtree, cobalt h1 with flame underline, green-barred h2, aquamarine containers. Single light theme by design. */
+:root{
+  --eggshell:#F9F6E7; --flame:#FF6D3A; --yellow:#FFCD1F; --green:#00BC74; --aqua:#6BE7BE; --lavender:#C0ADFF; --cobalt:#4C34E5; --onyx:#272A24;
+  --paper:#FFFDF6; --muted:#5D6056; --line:#BFE9D9;
+  --lav-soft:#EEE9FF; --aqua-soft:#E2F8F0; --flame-soft:#FFE7DD; --yellow-soft:#FFF4CC;
+  --font:"Figtree","Segoe UI",system-ui,sans-serif;
+}
+body{background:var(--eggshell);color:var(--onyx);font-family:var(--font);font-size:16px;line-height:1.6}
+.wrap{max-width:980px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:44px}
+h1,h2,h3{font-family:var(--font);font-weight:700;line-height:1.2;text-wrap:balance;margin:0}
+h1{color:var(--cobalt);font-size:clamp(2rem,5vw,2.9rem);border-bottom:4px solid var(--flame);padding-bottom:10px;width:fit-content;max-width:100%}
+h2{color:var(--onyx);font-size:1.6rem;border-left:5px solid var(--green);padding-left:10px}
+h3{color:var(--cobalt);font-size:1.1rem;border-bottom:2px dashed var(--aqua);padding-bottom:5px}
+p{margin:0;max-width:68ch}
+ul{margin:0;padding-left:20px;list-style-type:"\26A1  ";display:grid;gap:6px}
+a{color:var(--cobalt);font-weight:700}
+.brand{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.gtac-logo{max-height:50px;width:auto}
+.wordmark{font-weight:700;font-size:2rem;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:8px}
+.wordmark::before{content:"";width:26px;height:26px;border-radius:50%;background:conic-gradient(var(--green) 0 25%,var(--yellow) 0 60%,var(--flame) 0)}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+header{display:grid;gap:16px}
+.lede{font-size:1.15rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:.85rem;font-weight:700;padding:4px 12px;border-radius:999px;border:1px solid var(--aqua);background:var(--paper)}
+section{display:grid;gap:20px}
+.diagram{background:var(--paper);border:1px solid var(--aqua);border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.05);padding:24px 16px;overflow-x:auto;text-align:center}
+.diagram pre{margin:0 auto;font-family:Arial,Helvetica,sans-serif}
+.diagram svg{max-width:none;height:auto}
+footer{font-size:.85rem;color:var(--muted);border-top:1px solid var(--flame);padding-top:16px}
+
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.slot{padding:12px;border-radius:10px;background:var(--paper);border:1px solid var(--aqua);display:grid;gap:4px;align-content:start}
+.slot b{font-size:1rem}
+.slot span{font-size:.85rem;color:var(--muted)}
+.slot .t{font-weight:700;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--onyx);font-variant-numeric:tabular-nums}
+.slot.p1{border-top:5px solid var(--cobalt)} .slot.p2{border-top:5px solid var(--green)} .slot.lm{border-top:5px solid var(--flame)} .slot.n{border-top:5px solid var(--yellow)}
+.band-head{display:grid;gap:10px}
+.p1s{--c:var(--cobalt);--soft:var(--lav-soft)} .p2s{--c:#00804F;--soft:var(--aqua-soft)} .lms{--c:#C9471A;--soft:var(--flame-soft)} .ns{--c:var(--onyx);--soft:var(--yellow-soft)} .ts{--c:var(--onyx);--soft:var(--paper)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{background:var(--soft);border-radius:10px;padding:16px;display:grid;gap:10px;align-content:start;min-width:0}
+.card p,.card li{font-size:.95rem}
+.table-wrap{overflow-x:auto;border:1px solid var(--aqua);border-radius:10px;background:var(--paper);box-shadow:0 4px 12px rgba(0,0,0,.05)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700;font-variant-numeric:tabular-nums;color:var(--c);white-space:nowrap}
+.open li{font-size:.95rem}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="brand"><img class="gtac-logo" src="https://gtac.edu.au/wp-content/themes/gtac/assets/images/logo-2024.png" alt="GTAC" width="140" height="50"></div>
+  <div class="eyebrow">GTAC · VCE Biology Units 1&amp;2 · Area of Study 1 · Draft 1, 16 Nov 2026</div>
+  <h1>The Cellula Institute: First Week</h1>
+  <p class="lede">A microscopy escape-room day. Students arrive as new research assistants, discover the institute's cell lines have been mixed up, prove what each sample is from evidence, then join a research lab to test how those cells respond to stress.</p>
+  <div class="chips">
+    <span class="chip">2 iPads per group</span><span class="chip">3 EVOS per lab</span>
+  </div>
+</header>
+
+<div class="strip" aria-label="Day timeline">
+  <div class="slot n"><span class="t">at school</span><b>Pre-task</b><span>Organelles, scale, estimation</span></div>
+  <div class="slot n"><span class="t">10 min</span><b>Induction</b><span>Prof. Castellan's welcome, logbook onboarding</span></div>
+  <div class="slot p1"><span class="t">~80 min</span><b>Part 1</b><span>Cell authentication, samples A–E</span></div>
+  <div class="slot p1"><span class="t">rolling</span><b>Evidence talk</b><span>Clear the case with an education officer</span></div>
+  <div class="slot n"><span class="t">break</span><b>Break</b><span>"Stress experiments start after the break"</span></div>
+  <div class="slot p2"><span class="t">~50 min</span><b>Part 2</b><span>Join a lab, run a real plate</span></div>
+  <div class="slot lm"><span class="t">~15 min</span><b>Lab meeting</b><span>2-min pitch per group</span></div>
+</div>
+
+<!-- OVERVIEW -->
+<section class="ns">
+  <div class="band-head">
+    <div class="eyebrow">Whole day</div>
+    <h2>The story in one line</h2>
+    <p>Prof. Mira Castellan, head of the fictional Cellula Institute, welcomes the new research assistants. Their first job: five tubes have lost their labels, and the stress experiments start after the break. No identity, no experiment.</p>
+  </div>
+  <div class="diagram"><pre class="mermaid">
+%%{init: {"theme": "base", "fontFamily": "Arial, Helvetica, sans-serif", "flowchart": {"useMaxWidth": false, "htmlLabels": false, "padding": 20, "rankSpacing": 40, "nodeSpacing": 40}, "themeVariables": {"fontSize": "20px", "fontFamily": "Arial, Helvetica, sans-serif", "primaryColor": "#EEE9FF", "primaryBorderColor": "#4C34E5", "primaryTextColor": "#272A24", "lineColor": "#272A24", "secondaryColor": "#E2F8F0", "tertiaryColor": "#FFF4CC", "edgeLabelBackground": "#FFFDF6"}}}%%
+flowchart TD
+  A["Pre-task at school"] --> B["Induction · 10 min"]
+  B --> C["Part 1 · Identify the cells · 80 min"]
+  C --> D{"Enough evidence?"}
+  D -- "not yet" --> C
+  D -- yes --> E["Break · the freezer defrosts"]
+  E --> F["Part 2 · Stress experiment · 50 min"]
+  F --> G["Lab meeting · 2-minute pitches"]
+  </pre></div>
+</section>
+
+<!-- PART 1 -->
+<section class="p1s">
+  <div class="band-head">
+    <div class="eyebrow">Part 1 · about 90 minutes including induction</div>
+    <h2>Cell authentication</h2>
+    <p>Five unlabelled samples (A–E) and six suspects on the list: MEFs, Sf9 insect cells, Paramecium, E. coli, baker's yeast, and fixed kidney cells as a decoy. Groups move freely between six benches in any order, collecting evidence into their logbook. When every sample has a claim backed by evidence, they talk it through with an education officer, who decides if they're ready.</p>
+  </div>
+  <div class="diagram"><pre class="mermaid">
+%%{init: {"theme": "base", "fontFamily": "Arial, Helvetica, sans-serif", "flowchart": {"useMaxWidth": false, "htmlLabels": false, "padding": 20, "rankSpacing": 40, "nodeSpacing": 40}, "themeVariables": {"fontSize": "20px", "fontFamily": "Arial, Helvetica, sans-serif", "primaryColor": "#EEE9FF", "primaryBorderColor": "#4C34E5", "primaryTextColor": "#272A24", "lineColor": "#272A24", "secondaryColor": "#E2F8F0", "tertiaryColor": "#FFF4CC", "edgeLabelBackground": "#FFFDF6"}}}%%
+flowchart TD
+  A["Briefing: the labels are gone"] --> B["Set up logbook and roles"]
+  B --> C["Visit any station · benches 1 to 6"]
+  C --> D["Record photo, size and clue"]
+  D --> E{"All 5 samples solved?"}
+  E -- no --> C
+  E -- yes --> F["Talk it through with an education officer"]
+  F --> G{"Convincing?"}
+  G -- "not yet" --> C
+  G -- yes --> H["Lab access: on to Part 2"]
+  </pre></div>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Bench</th><th>Station</th><th>Students do</th><th>Evidence it gives</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Scale and Size</td><td>Measure cells in images using scale bars, then place them on the biology scale tool</td><td>Size class: E. coli ~2 µm, yeast ~5 µm, Sf9 ~15 µm, MEF ~20–50 µm spread, Paramecium ~100–300 µm. Prokaryote or eukaryote. Surface area to volume</td></tr>
+      <tr><td>2</td><td>Living Cells</td><td>Wet mounts. Methylene blue. Lugol's to stop Paramecium. Feed neutral-red yeast to Paramecium</td><td>Movement, cilia, food vacuoles, shape, live and dead yeast</td></tr>
+      <tr><td>3</td><td>Fluorescence Gallery</td><td>Image pre-stained MEFs (phalloidin, DAPI, MitoTracker), Sf9 and yeast</td><td>Mitochondria present or absent, cytoskeleton, how the cell spreads</td></tr>
+      <tr><td>4</td><td>Stain It Yourself</td><td>Add DAPI to fixed samples, 5–10 minutes</td><td>Nucleus or nucleoid, nucleus size, cells caught in mitosis</td></tr>
+      <tr><td>5</td><td>Cell Wall</td><td>Gram stain E. coli against a Gram-positive comparison. Yeast wall stain</td><td>Wall present, Gram-negative rods, fungal wall</td></tr>
+      <tr><td>6</td><td>Surface (SEM)</td><td>Short guided visit with staff</td><td>Rods, bud scars, cilia, the surface of an insect cell versus a fibroblast</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="cols">
+    <div class="card"><h3>Roles, rotating at each station</h3>
+      <ul><li>Lab Lead</li><li>Microscopist</li><li>Imaging and Measurement</li><li>Sample and Safety Officer</li><li>Logbook Keeper</li><li>Science Communicator</li></ul>
+    </div>
+    <div class="card"><h3>Study design links</h3>
+      <ul><li>Prokaryotic vs eukaryotic cells</li><li>Surface area to volume and limits on cell size</li><li>Organelle structure and function: nucleus, mitochondria, cytoskeleton, vacuoles, cell wall</li><li>Binary fission (E. coli) and mitosis (DAPI)</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- PART 2 -->
+<section class="p2s">
+  <div class="band-head">
+    <div class="eyebrow">Part 2 · about 50 minutes</div>
+    <h2>Join a research lab</h2>
+    <p>During the break, the institute's freezer defrosts. Prof. Castellan explains that some cells warmed up and others were already part of planned stress tests (drugs, heat, pH). Each group of six chooses one of five labs, each tied to a cell they identified in Part 1 and to a real scientist's research. They design the experiment on an iPad, run a real plate on the FLUOstar, gather supporting images, and build a one-slide pitch.</p>
+  </div>
+  <div class="diagram"><pre class="mermaid">
+%%{init: {"theme": "base", "fontFamily": "Arial, Helvetica, sans-serif", "flowchart": {"useMaxWidth": false, "htmlLabels": false, "padding": 20, "rankSpacing": 40, "nodeSpacing": 40}, "themeVariables": {"fontSize": "20px", "fontFamily": "Arial, Helvetica, sans-serif", "primaryColor": "#EEE9FF", "primaryBorderColor": "#4C34E5", "primaryTextColor": "#272A24", "lineColor": "#272A24", "secondaryColor": "#E2F8F0", "tertiaryColor": "#FFF4CC", "edgeLabelBackground": "#FFFDF6"}}}%%
+flowchart TD
+  A["Break: the freezer defrosts"] --> B["Choose one research lab"]
+  B --> C["Design on iPad: question, controls, plate map"]
+  C --> D["Run the real plate on the FLUOstar"]
+  D --> E["Add images: EVOS, SEM, 3D model"]
+  E --> F["Graph and conclusion in logbook"]
+  F --> G["One-slide pitch"]
+  </pre></div>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Lab</th><th>Cell</th><th>Draft question</th><th>Readouts</th></tr></thead>
+    <tbody>
+      <tr><td>Apoptosis</td><td>MEFs</td><td>Which stressors push healthy cells into apoptosis?</td><td>FLUOstar viability and PI, condensed nuclei on EVOS, 3D z-stack model, DNA gel</td></tr>
+      <tr><td>Protein</td><td>Sf9</td><td>The freezer defrosted: did warming damage our protein factories?</td><td>FLUOstar viability, EVOS, gel on pre-stressed Sf9</td></tr>
+      <tr><td>Superbug</td><td>E. coli</td><td>Does this antibiotic kill the bacteria or stop them dividing?</td><td>FLUOstar PI and growth, Gram stain, SEM of treated cells</td></tr>
+      <tr><td>Fungal</td><td>Yeast</td><td>Which conditions keep fungal cells metabolically active?</td><td>TTC, methylene blue counts, neutral red on FLUOstar, SEM</td></tr>
+      <tr><td>Parasite</td><td>Paramecium</td><td>Can a drug kill the protist and spare host cells?</td><td>Neutral red viability, compared with MEFs</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="cols">
+    <div class="card"><h3>Study design links</h3>
+      <ul><li>Apoptosis as regulated cell death</li><li>Disrupted cell cycle and cancer cells</li><li>The plasma membrane: integrity, PI uptake, dye uptake</li><li>Key science skills: questions, variables, controls, data analysis</li></ul>
+    </div>
+    <div class="card"><h3>Practical design</h3>
+      <p>Staff stress the cells before the day, so the plate is real but fits into 50 minutes. Students add the readout dye, run the FLUOstar and import the results into their logbook.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LAB MEETING -->
+<section class="lms">
+  <div class="band-head">
+    <div class="eyebrow">Close · about 15 minutes per lab</div>
+    <h2>Lab meeting</h2>
+    <p>Each of the six groups in the room gives a two-minute pitch from their one slide: the question, what they did, one graph or image, and what it means. The coaching scientist responds as a colleague. Prof. Castellan closes with what each real lab has actually found.</p>
+  </div>
+  <div class="diagram"><pre class="mermaid">
+%%{init: {"theme": "base", "fontFamily": "Arial, Helvetica, sans-serif", "flowchart": {"useMaxWidth": false, "htmlLabels": false, "padding": 20, "rankSpacing": 40, "nodeSpacing": 40}, "themeVariables": {"fontSize": "20px", "fontFamily": "Arial, Helvetica, sans-serif", "primaryColor": "#EEE9FF", "primaryBorderColor": "#4C34E5", "primaryTextColor": "#272A24", "lineColor": "#272A24", "secondaryColor": "#E2F8F0", "tertiaryColor": "#FFF4CC", "edgeLabelBackground": "#FFFDF6"}}}%%
+flowchart TD
+  A["Pitch slide built from the logbook"] --> B["2-minute pitch · 6 groups"]
+  B --> C["Scientist responds"]
+  C --> D["Reveal: the real research"]
+  D --> E["Logbook PDF to teacher"]
+  </pre></div>
+</section>
+
+<!-- BUILD -->
+<section class="ts">
+  <div class="band-head">
+    <div class="eyebrow">How it's built</div>
+    <h2>The digital pieces</h2>
+    <p>Everything runs in the browser on GTAC iPads, bench computers and the big screen. One logbook record per group connects every station, stored on the GTAC server.</p>
+  </div>
+  <div class="diagram"><pre class="mermaid">
+%%{init: {"theme": "base", "fontFamily": "Arial, Helvetica, sans-serif", "flowchart": {"useMaxWidth": false, "htmlLabels": false, "padding": 20, "rankSpacing": 40, "nodeSpacing": 40}, "themeVariables": {"fontSize": "20px", "fontFamily": "Arial, Helvetica, sans-serif", "primaryColor": "#EEE9FF", "primaryBorderColor": "#4C34E5", "primaryTextColor": "#272A24", "lineColor": "#272A24", "secondaryColor": "#E2F8F0", "tertiaryColor": "#FFF4CC", "edgeLabelBackground": "#FFFDF6"}}}%%
+flowchart TD
+  ST["Bench computers: station pages"] -- "QR code" --> LB["iPads: group logbook"]
+  LB --> SV[("GTAC server · kept 7 days")]
+  SV --> DB["Education officer dashboard"]
+  SV --> PDF["PDF to teachers"]
+  SC["Laptops: biology scale tool"]
+  BS["Big screen: videos and 3D model"]
+  </pre></div>
+</section>
+
+<section class="ns">
+  <div class="band-head">
+    <div class="eyebrow">Still to decide</div>
+    <h2>Open questions</h2>
+  </div>
+  <ul class="open">
+    <li>Exact readiness rule for the evidence conversation</li>
+    <li>Order stock: propidium iodide, crystal violet, Calcofluor white, formaldehyde, a Gram-positive comparison organism</li>
+    <li>Final stressors and readout dye for each Part 2 lab, and which scientists have confirmed</li>
+    <li>Source of the confocal z-stack data for the 3D model</li>
+    <li>Final name for the fictional institute and its head</li>
+  </ul>
+</section>
+
+<footer>Prepared for the GTAC microscopy working group. Prof. Castellan and the Cellula Institute are fictional placeholders.</footer>
+</div>
+
+<script>
+/* The GTAC logo is hosted on gtac.edu.au; where it can't load (e.g. inside a Claude artifact) show a text wordmark instead. */
+document.querySelectorAll('img.gtac-logo').forEach(function (img) {
+  function fallback() { var s = document.createElement('span'); s.className = 'wordmark'; s.textContent = 'gtac'; img.replaceWith(s); }
+  if (img.complete && !img.naturalWidth) fallback(); else img.addEventListener('error', fallback);
+});
+</script>
+
+<!-- Mermaid renders natively in the Claude artifact viewer; this loader renders it when the file is opened anywhere else (local file, GitHub Pages). -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  if (/claude/i.test(location.hostname) || !window.mermaid) return;
+  var nodes = Array.prototype.filter.call(document.querySelectorAll('pre.mermaid'), function (p) {
+    return !p.querySelector('svg') && !p.hasAttribute('data-processed');
+  });
+  if (!nodes.length) return;
+  mermaid.initialize({ startOnLoad: false, theme: 'base', fontFamily: 'Arial, Helvetica, sans-serif', themeVariables: { fontSize: '20px', fontFamily: 'Arial, Helvetica, sans-serif', primaryColor: '#EEE9FF', primaryBorderColor: '#4C34E5', primaryTextColor: '#272A24', lineColor: '#272A24', secondaryColor: '#E2F8F0', tertiaryColor: '#FFF4CC', edgeLabelBackground: '#FFFDF6' }, flowchart: { htmlLabels: false, useMaxWidth: false, padding: 20, rankSpacing: 40, nodeSpacing: 40 } });
+  mermaid.run({ nodes: nodes });
+})();
+</script>

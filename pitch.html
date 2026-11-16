@@ -1,0 +1,179 @@
+<meta charset="utf-8">
+<title>Who Am I? Cell Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&display=swap">
+<style>
+/* GTAC brand (vibe.gtac.edu.au): eggshell page, Figtree, cobalt h1 with flame underline, green-barred h2, aquamarine containers. Single light theme by design. */
+:root{
+  --eggshell:#F9F6E7; --flame:#FF6D3A; --yellow:#FFCD1F; --green:#00BC74; --aqua:#6BE7BE; --lavender:#C0ADFF; --cobalt:#4C34E5; --onyx:#272A24;
+  --paper:#FFFDF6; --muted:#5D6056; --line:#BFE9D9;
+  --lav-soft:#EEE9FF; --aqua-soft:#E2F8F0; --flame-soft:#FFE7DD; --yellow-soft:#FFF4CC;
+  --font:"Figtree","Segoe UI",system-ui,sans-serif;
+}
+body{background:var(--eggshell);color:var(--onyx);font-family:var(--font);font-size:16px;line-height:1.6}
+.wrap{max-width:980px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:44px}
+h1,h2,h3{font-family:var(--font);font-weight:700;line-height:1.2;text-wrap:balance;margin:0}
+h1{color:var(--cobalt);font-size:clamp(2rem,5vw,2.9rem);border-bottom:4px solid var(--flame);padding-bottom:10px;width:fit-content;max-width:100%}
+h2{color:var(--onyx);font-size:1.6rem;border-left:5px solid var(--green);padding-left:10px}
+h3{color:var(--cobalt);font-size:1.1rem;border-bottom:2px dashed var(--aqua);padding-bottom:5px}
+p{margin:0;max-width:68ch}
+ul{margin:0;padding-left:20px;list-style-type:"\26A1  ";display:grid;gap:6px}
+a{color:var(--cobalt);font-weight:700}
+.brand{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.gtac-logo{max-height:50px;width:auto}
+.wordmark{font-weight:700;font-size:2rem;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:8px}
+.wordmark::before{content:"";width:26px;height:26px;border-radius:50%;background:conic-gradient(var(--green) 0 25%,var(--yellow) 0 60%,var(--flame) 0)}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+header{display:grid;gap:16px}
+.lede{font-size:1.15rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:.85rem;font-weight:700;padding:4px 12px;border-radius:999px;border:1px solid var(--aqua);background:var(--paper)}
+section{display:grid;gap:20px}
+.diagram{background:var(--paper);border:1px solid var(--aqua);border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.05);padding:24px 16px;overflow-x:auto;text-align:center}
+.diagram pre{margin:0 auto;font-family:Arial,Helvetica,sans-serif}
+.diagram svg{max-width:none;height:auto}
+footer{font-size:.85rem;color:var(--muted);border-top:1px solid var(--flame);padding-top:16px}
+
+.wrap{max-width:760px}
+body{font-size:17px}
+h1{font-size:clamp(2.3rem,7vw,3.4rem)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:8px}
+.stat{border-top:4px solid var(--flame);padding-top:8px;display:grid;gap:2px}
+.stat b{font-size:1.9rem;color:var(--cobalt);font-variant-numeric:tabular-nums}
+.stat span{font-size:.85rem;color:var(--muted)}
+.beat{display:grid;gap:12px}
+.p1{--soft:var(--lav-soft)} .p2{--soft:var(--aqua-soft)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.tile{background:var(--soft);border-radius:10px;padding:12px 14px;display:grid;gap:2px;min-width:0}
+.tile b{font-size:1.05rem}
+.tile span{font-size:.9rem;color:var(--muted)}
+.need{display:grid;gap:10px}
+.need div{display:grid;grid-template-columns:7.5rem 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.need div:last-child{border-bottom:0}
+.need .k{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+@media (max-width:480px){.need div{grid-template-columns:1fr;gap:2px}}
+.ask{background:var(--cobalt);color:var(--eggshell);border-radius:10px;padding:20px;display:grid;gap:8px}
+.ask b{font-size:1.25rem}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="brand"><img class="gtac-logo" src="https://gtac.edu.au/wp-content/themes/gtac/assets/images/logo-2024.png" alt="GTAC" width="140" height="50"></div>
+  <div class="eyebrow">GTAC · VCE Biology Units 1&amp;2 · New program pitch</div>
+  <h1>Who Am I? Cell Lab</h1>
+  <p class="lede">Five cell samples have lost their labels. Students work as research teams to identify them with real microscopes, then test how cells respond to stress.</p>
+  <div class="stats">
+    <div class="stat"><b>2</b><span>parts: identify, then test</span></div>
+    <div class="stat"><b>~140</b><span>minutes, plus a break</span></div>
+    <div class="stat"><b>5</b><span>unknown cells</span></div>
+  </div>
+</header>
+
+<section>
+  <h2>The day</h2>
+  <div class="diagram"><pre class="mermaid">
+%%{init: {"theme": "base", "fontFamily": "Arial, Helvetica, sans-serif", "flowchart": {"useMaxWidth": false, "htmlLabels": false, "padding": 20, "rankSpacing": 40, "nodeSpacing": 40}, "themeVariables": {"fontSize": "20px", "fontFamily": "Arial, Helvetica, sans-serif", "primaryColor": "#EEE9FF", "primaryBorderColor": "#4C34E5", "primaryTextColor": "#272A24", "lineColor": "#272A24", "secondaryColor": "#E2F8F0", "tertiaryColor": "#FFF4CC", "edgeLabelBackground": "#FFFDF6"}}}%%
+flowchart TD
+  A["Part 1 · Identify the cells · 90 min"] --> B{"Enough evidence?"}
+  B -- "not yet" --> A
+  B -- yes --> C["Break"]
+  C --> D["Part 2 · Test the cells · 50 min"]
+  D --> E["Lab meeting · 2-minute pitches"]
+  </pre></div>
+</section>
+
+<section class="beat p1">
+  <div class="eyebrow">Part 1 · 90 minutes</div>
+  <h2>Identify the cells</h2>
+  <ul>
+    <li>Samples A–E could be MEFs, Sf9 insect cells, Paramecium, E. coli or baker's yeast.</li>
+    <li>Groups move freely between six stations and record evidence on iPads.</li>
+    <li>They move on when they can convince an education officer.</li>
+  </ul>
+  <div class="grid">
+    <div class="tile"><b>Size and scale</b><span>Scale tool, scale bars</span></div>
+    <div class="tile"><b>Living cells</b><span>Light microscopes, quick stains</span></div>
+    <div class="tile"><b>Fluorescence</b><span>EVOS: nuclei, mitochondria, actin</span></div>
+    <div class="tile"><b>Stain it yourself</b><span>DAPI on the EVOS</span></div>
+    <div class="tile"><b>Cell wall</b><span>Gram stain</span></div>
+    <div class="tile"><b>Surface</b><span>Benchtop SEM</span></div>
+  </div>
+</section>
+
+<section class="beat p2">
+  <div class="eyebrow">Part 2 · 50 minutes</div>
+  <h2>Test the cells</h2>
+  <ul>
+    <li>Each group picks one research project linked to a real scientist.</li>
+    <li>They design the experiment on an iPad and run a real plate on the FLUOstar.</li>
+    <li>Supporting images come from the EVOS, the SEM and a 3D cell model.</li>
+    <li>The day ends with a 2-minute pitch per group.</li>
+  </ul>
+  <div class="grid">
+    <div class="tile"><b>Apoptosis</b><span>MEFs · WEHI</span></div>
+    <div class="tile"><b>Protein factories</b><span>Sf9 · after a freezer defrost</span></div>
+    <div class="tile"><b>Antibiotics</b><span>E. coli · Doherty</span></div>
+    <div class="tile"><b>Fungal materials</b><span>Baker's yeast</span></div>
+    <div class="tile"><b>Anti-parasite drugs</b><span>Paramecium · malaria link</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Why it works</h2>
+  <div class="chips">
+    <span class="chip">Prokaryotes vs eukaryotes</span>
+    <span class="chip">Surface area to volume</span>
+    <span class="chip">Organelle structure and function</span>
+    <span class="chip">Plasma membrane</span>
+    <span class="chip">Binary fission and mitosis</span>
+    <span class="chip">Apoptosis</span>
+    <span class="chip">Key science skills</span>
+  </div>
+  <ul>
+    <li><b>Student choice:</b> groups pick their own route and their own research question.</li>
+    <li><b>Real gear:</b> EVOS, SEM and FLUOstar, used by students.</li>
+    <li><b>Real people:</b> a scientist coaches each group.</li>
+    <li><b>Less paper:</b> one digital logbook, sent to the teacher as a PDF.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>What we need</h2>
+  <div class="need">
+    <div><span class="k">Digital</span><span>Logbook on the GTAC server, biology scale tool, station screens, experiment designer</span></div>
+    <div><span class="k">Lab</span><span>Image library with scale bars, short stain protocols, pre-stressed plates, stock order</span></div>
+    <div><span class="k">People</span><span>Scientists to confirm research projects and coach groups</span></div>
+    <div><span class="k">Timeline</span><span>Prototypes by December, content by February, pilot in Term 1</span></div>
+  </div>
+</section>
+
+<div class="ask">
+  <b>Today's ask</b>
+  <p>Agree on the two-part format and confirm the scientist partners, so building can start.</p>
+</div>
+
+<footer>GTAC microscopy working group · Draft, November 2026</footer>
+</div>
+
+<script>
+/* The GTAC logo is hosted on gtac.edu.au; where it can't load (e.g. inside a Claude artifact) show a text wordmark instead. */
+document.querySelectorAll('img.gtac-logo').forEach(function (img) {
+  function fallback() { var s = document.createElement('span'); s.className = 'wordmark'; s.textContent = 'gtac'; img.replaceWith(s); }
+  if (img.complete && !img.naturalWidth) fallback(); else img.addEventListener('error', fallback);
+});
+</script>
+
+<!-- Mermaid renders natively in the Claude artifact viewer; this loader renders it when the file is opened anywhere else (local file, GitHub Pages). -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  if (/claude/i.test(location.hostname) || !window.mermaid) return;
+  var nodes = Array.prototype.filter.call(document.querySelectorAll('pre.mermaid'), function (p) {
+    return !p.querySelector('svg') && !p.hasAttribute('data-processed');
+  });
+  if (!nodes.length) return;
+  mermaid.initialize({ startOnLoad: false, theme: 'base', fontFamily: 'Arial, Helvetica, sans-serif', themeVariables: { fontSize: '20px', fontFamily: 'Arial, Helvetica, sans-serif', primaryColor: '#EEE9FF', primaryBorderColor: '#4C34E5', primaryTextColor: '#272A24', lineColor: '#272A24', secondaryColor: '#E2F8F0', tertiaryColor: '#FFF4CC', edgeLabelBackground: '#FFFDF6' }, flowchart: { htmlLabels: false, useMaxWidth: false, padding: 20, rankSpacing: 40, nodeSpacing: 40 } });
+  mermaid.run({ nodes: nodes });
+})();
+</script>
