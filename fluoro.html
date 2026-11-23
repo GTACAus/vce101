@@ -18,7 +18,11 @@
   @media (max-width:900px){aside{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}}
   aside .brand{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
   aside .prog{font-weight:700;font-size:1rem;margin-bottom:18px}
-  .part{border-radius:12px;padding:12px;margin-bottom:14px;border:1px solid var(--line)}
+  .part{border-radius:12px;padding:12px;margin-bottom:14px;border:1px solid var(--line);cursor:pointer;transition:box-shadow .15s}
+  .part:hover{box-shadow:0 2px 10px rgba(0,0,0,.08)}
+  .part.active{box-shadow:0 0 0 2px currentColor}
+  .part.A.active{color:var(--partA)} .part.B.active{color:var(--partB)}
+  .part.active > *{color:var(--ink)}
   .part.A{background:#f3f0ff;border-color:#d0bfff}
   .part.B{background:#e3fafc;border-color:#99e9f2}
   .part .plabel{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
@@ -30,6 +34,12 @@
   .cycle .stage{flex:1 1 150px;background:#fff;border:1px solid #99e9f2;border-radius:10px;padding:8px 10px;font-size:.84rem}
   .cycle .stage b{display:block;color:var(--partB);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
   .cycle .stage i.ex{display:block;color:var(--muted);margin-top:3px}
+  .tl{display:flex;gap:2px;margin-bottom:6px}
+  .tl div{background:#f1f3f5;color:#868e96;border-radius:3px;padding:2px 3px;font-size:.56rem;text-align:center;font-weight:600}
+  .tl div small{display:block;font-weight:400}
+  .tl div.done{background:#e5dbff;color:#5f3dc4}
+  .tl div.on{background:var(--partA);color:#fff}
+  .tip{background:#fff9db;border:1px solid #ffe066;border-radius:6px;padding:4px 7px;margin-top:6px}
   .pstory{font-size:.8rem;background:#fff;border-radius:8px;padding:8px 10px;margin-bottom:4px;line-height:1.4}
   /* MRS GREN tap grid (iPad wireframe) */
   .mg{width:100%;border-collapse:collapse;font-size:.64rem}
@@ -223,20 +233,22 @@
       <div>
         <div class="card">
           <h3>How the station runs</h3>
-          <div class="flow">
-            <span class="n">Welcome</span><span class="a">→</span>
-            <span class="n">Cheat sheet</span><span class="a">→</span>
-            <span class="n">Stereo: live</span><span class="a">→</span>
-            <span class="n">Compound: methylene blue</span><span class="a">→</span>
-            <span class="n">Stain a well + EVOS</span><span class="a">→</span>
-            <span class="n">Workbook</span>
-          </div>
+          <p style="margin:0 0 6px">A <b>quick observation</b>: groups of up to 3 spend <b>20 minutes</b> here, then rotate.</p>
+          <table>
+            <thead><tr><th>Minutes</th><th>Step</th><th>Why this order</th></tr></thead>
+            <tbody>
+              <tr><td>0–2</td><td>Welcome + cheat sheet</td><td>Know what to look for before reaching a microscope</td></tr>
+              <tr><td>2–5</td><td><b>Stain a well</b> (MitoTracker + Protoslo)</td><td>The stain needs a few minutes, so start it first</td></tr>
+              <tr><td>5–9</td><td>Stereo: live cells</td><td>Done while the stain develops</td></tr>
+              <tr><td>9–13</td><td>Compound: methylene blue slide</td><td>Done while the stain develops</td></tr>
+              <tr><td>13–18</td><td>EVOS: image stained well + control</td><td>Stain is ready; image before the cells die</td></tr>
+              <tr><td>18–20</td><td>Workbook + MRS GREN, tidy, rotate</td><td>Bench is reset for the next group</td></tr>
+            </tbody>
+          </table>
           <ul class="tight">
+            <li>The <b>iPad guides every step</b>: a timeline bar, a "how to" for each microscope, and a "Stuck?" tip on every screen, so groups can succeed without an educator at the station</li>
             <li>At <b>every</b> microscope, students check which parts of <b>MRS GREN</b> they can see evidence of, and justify each one in the workbook</li>
-            <li>Groups rotate between the stereo, the compound and the EVOS so no microscope sits idle</li>
-            <li>The next group takes the next well in row A that isn't struck through</li>
-            <li>MitoTracker shows up after <b>a few minutes</b>, so students image straight away</li>
-            <li>Group size per side: <b>up to 3</b>. Time at station: <b>15–20 minutes</b>.</li>
+            <li>The next group takes the next row A well that isn't struck through. 4 wells per plate covers 4 rotations per side.</li>
           </ul>
         </div>
         <div class="card">
@@ -457,8 +469,8 @@
 <script>
 /* ===== Edit session times here ===== */
 const PARTS = {
-  A:{title:'The life of a cell', length:'60 min', note:'includes a 10 min intro to the cell', time:'TBC'},
-  B:{title:'Research', length:'90 min', note:'', time:'TBC'}
+  A:{title:'The life of a cell', length:'20 min rotation', note:'', time:'10:15 – 11:15'},
+  B:{title:'Research', length:'90 min', note:'', time:'11:45 – 1:15'}
 };
 const STATIONS = {
   para:{part:'A', name:'Paramecium station', plate:'12-well plate'},
@@ -807,35 +819,44 @@ function benchLegend(){
 function screen(title, body, bar){return `<div class="ipad"><div class="screen"><div class="sbar"><span>${bar||(isA()?'Paramecium station':'Fluoro station')}</span><span>${title}</span></div><div class="sbody">${body}</div></div></div>`;}
 function frame(n,title,scr,explain){return `<div class="frame"><h4><span class="num">${n}</span>${title}</h4>${scr}<div class="explain">${explain}</div></div>`;}
 function protoScreen(o){
-  return screen(o.code, `
+  const left = (o.what?`<b>What it shows</b><ul class="steps">${o.what.map(x=>`<li>${x}</li>`).join('')}</ul>`:'')
+    + (o.q?`<b style="margin-top:5px">Questions</b><ul class="steps">${o.q.map(x=>`<li>${x}</li>`).join('')}</ul>`:'')
+    + (o.steps?`<b style="margin-top:5px">${o.stepsTitle||'Method'}</b><ol class="steps">${o.steps.map(x=>`<li>${x}</li>`).join('')}</ol>`:'');
+  return screen(o.code+(o.time?' · ⏱ '+o.time:''), `
+    ${o.tl!==undefined?timeline(o.tl):''}
     ${o.single?'':`<div class="sidetabs"><span class="${o.side==='A'?'on':''}">Side A · What it shows</span><span class="${o.side==='B'?'on':''}">Side B · Method</span></div>`}
     <h5>${o.title}</h5>
     <div class="wf-row">
-      <div class="wf-box" style="flex:1.3">${o.side==='A'
-        ? `<b>What it shows</b><ul class="steps">${o.what.map(x=>`<li>${x}</li>`).join('')}</ul><b style="margin-top:5px">Questions</b><ul class="steps">${o.q.map(x=>`<li>${x}</li>`).join('')}</ul>`
-        : `<b>Method</b><ol class="steps">${o.steps.map(x=>`<li>${x}</li>`).join('')}</ol>`}</div>
+      <div class="wf-box" style="flex:1.3">${left}</div>
       <div style="flex:.8;display:flex;flex-direction:column;gap:6px">
         <div class="ph" style="flex:1">${o.ill||'Step illustration (pipette → well)'}</div>
         <div class="wf-box"><b>You need</b>${o.need}</div>
       </div>
     </div>
+    ${o.tip?`<div class="tip"><b>Stuck?</b> ${o.tip}</div>`:''}
     <div style="margin-top:6px;display:flex;justify-content:space-between"><span class="btn ghost">← Back</span><span>${o.chips||''}</span><span class="btn">${o.next||'Next →'}</span></div>`);
+}
+
+/* 20-minute rotation plan for Part A */
+const TL = [['Start',2,'0–2'],['Stain',3,'2–5'],['Stereo',4,'5–9'],['Compound',4,'9–13'],['EVOS',5,'13–18'],['Record',2,'18–20']];
+function timeline(active){
+  return `<div class="tl">${TL.map((t,i)=>`<div class="${i===active?'on':i<active?'done':''}" style="flex:${t[1]}">${t[0]}<small>${t[2]} min</small></div>`).join('')}</div>`;
 }
 
 function boardA(){
   let out='';
-  out+=frame(1,'Welcome', screen('Welcome',`
+  out+=frame(1,'Welcome · 0–2 min', screen('Welcome · ⏱ 2 min',`
+    ${timeline(0)}
     <h5>Meet <i>Paramecium</i>: a whole life in one cell</h5>
     <div class="wf-box" style="background:#f3f0ff;border-color:#d0bfff;margin-bottom:6px"><b>The life of a CELL</b>Unicellular organisms like parasites and pond life must carry out <b>MRS GREN</b> with no tissues to help. At each microscope, can you spot evidence of MRS GREN? Which structures make it possible?</div>
-    <div class="wf-row" style="margin-bottom:6px">${[['Stereo','Watch it swim'],['Compound','Find the nucleus'],['EVOS','Light up the mitochondria']].map(m=>`<div class="wf-box" style="text-align:center"><div class="ph" style="height:50px;margin-bottom:4px">${m[0]} photo</div><b>${m[0]}</b>${m[1]}</div>`).join('')}</div>
     <div class="wf-row">
-      <div class="wf-box"><b>How this app works</b><ol class="steps"><li>Learn the features (cheat sheet)</li><li>Look at live cells (stereo)</li><li>Look at a stained slide (compound)</li><li>Stain a well and image it (EVOS)</li><li>Record everything in your workbook</li></ol></div>
-      <div class="wf-box"><b>Everything is on your bench</b><div class="wf-row" style="gap:4px;margin-top:3px;flex-wrap:wrap">${['EVOS','Pipettes','MitoTracker','Protoslo','12-well plate','Sharpie'].map(t=>`<div class="ph" style="height:28px;min-width:44px">${t}</div>`).join('')}</div></div>
+      <div class="wf-box"><b>Your 20 minutes</b><ol class="steps"><li><b>Stain first</b>: it needs a few minutes to work</li><li>Stereo: watch them swim</li><li>Compound: find the nucleus</li><li>EVOS: see the mitochondria</li><li>Record + MRS GREN, then rotate</li></ol></div>
+      <div class="wf-box"><b>Team of up to 3</b>Share the jobs: one pipettes, one drives the microscope, one records on the iPad. Swap at each step.<div class="wf-row" style="gap:4px;margin-top:5px;flex-wrap:wrap">${['EVOS','P20','MitoTracker','Protoslo','12-well plate','Sharpie'].map(t=>`<div class="ph" style="height:26px;min-width:44px">${t}</div>`).join('')}</div></div>
     </div>
-    <div style="text-align:right;margin-top:6px"><span class="btn">Start →</span></div>`),
-    'Opens with the story: a single cell has to do all of MRS GREN by itself. Then introduces the three microscopes, the order of the activity and the bench equipment, with photo placeholders.');
+    <div style="display:flex;justify-content:space-between;margin-top:6px"><span class="btn ghost">Cheat sheet</span><span class="btn">Start the timer →</span></div>`),
+    'Opens with the story, then sets up the 20 minutes. The timeline bar at the top of every screen shows where the group should be, and a "Start the timer" button starts a 20-minute countdown so groups are ready to rotate.');
 
-  out+=frame(2,'Cheat sheet: <i>Paramecium</i> features', screen('Cheat sheet',`
+  out+=frame(2,'Cheat sheet: <i>Paramecium</i> features', screen('Cheat sheet · open any time',`
     <h5>What to look for</h5>
     <div class="wf-row">
       <div style="flex:1.25">${paraDiagram(true)}</div>
@@ -843,53 +864,62 @@ function boardA(){
         ${FEATURES.map(f=>`<div style="margin:1px 0"><b style="display:inline;font-size:.66rem">${f[0]}</b> <span style="color:#5f6b7a">· ${f[2]}</span> <span style="color:#5f3dc4">· ${f[3]}</span></div>`).join('')}
       </div>
     </div>
-    <div style="text-align:right;margin-top:6px"><span class="btn">Go to stereo →</span></div>`),
-    'Comes second so students know what to look for before they reach a microscope. A labelled diagram shows the cell membrane, cilia, oral groove, food and contractile vacuoles, macro- and micronucleus, mitochondrial network and cytoplasm. Each feature lists the microscope that shows it best (grey) and the part of MRS GREN it helps with (purple). Students can return to it from any screen.');
+    <div style="text-align:right;margin-top:6px"><span class="btn">Go to staining →</span></div>`),
+    'A quick glance at the start, then one tap away from every screen. Each feature lists the microscope that shows it best (grey) and the part of MRS GREN it helps with (purple).');
 
-  out+=frame(3,'Stereo microscope: live cells', protoScreen({code:'Stereo', side:'A', single:true, title:'Watching live <i>Paramecium</i>',
-    what:['Whole, living cells swimming in water','Their slipper shape, and how they spin and change direction','Cilia beat too fast to see one by one, but you can see the cell moving'],
-    q:['Which way do they swim? What happens when they bump into something?','Why does a single cell need to move?'],
-    ill:'Photo: stereo microscope + live Paramecium', need:'Stereo microscope (beside the bench)', next:'Go to compound →'}),
-    'Students observe live cells first, before anything is stained.');
-
-  out+=frame(4,'Compound microscope: methylene blue slide', protoScreen({code:'Compound', side:'A', single:true, title:'Methylene blue: finding the nucleus',
-    what:['Methylene blue stains DNA dark blue','The large <b>macronucleus</b> and small <b>micronucleus</b> stand out','You can also see the oral groove and food vacuoles','Use 10× to find a cell, then 40× for detail'],
-    q:['Why does one cell have two nuclei?','How does this fixed cell look different from the live ones?'],
-    ill:'Photo: methylene blue Paramecium at 40×', need:'Compound microscope + prepared slide', chips:'<span class="chip c-mb">MB</span>', next:'Go to MitoTracker →'}),
-    'The slide is ready to view, so no preparation is needed. This links to the methylene blue treatment card.');
-
-  out+=frame(5,'MitoTracker Red: Side A', protoScreen({code:'MitoTracker Red', side:'A', title:'Lighting up the mitochondria',
-    what:['MitoTracker Red goes into <b>active mitochondria</b>, so it only works in living cells','<i>Paramecium</i> has many mitochondria to power its thousands of cilia','Seen in the <b>RFP</b> (red) channel on the EVOS','The stain eventually <b>kills the cells</b>, so image within a few minutes'],
-    q:['Where are the mitochondria in the cell? Do they form a network?','Why would this cell need so much energy?'],
-    ill:'Illustration: red mitochondrial network in Paramecium', need:'Bench items shown as icons', chips:'<span class="chip c-mito">M</span>', next:'Go to method →'}),
-    'Explains what the stain shows, and why each stained well can only be used once.');
-
-  out+=frame(6,'MitoTracker Red: Side B method', protoScreen({code:'MitoTracker Red', side:'B', title:'Staining live <i>Paramecium</i> in the 12-well plate',
+  out+=frame(3,'Stain first · 2–5 min', protoScreen({code:'MitoTracker Red', time:'3 min', tl:1, single:true, title:'Start your stain now: it needs a few minutes to work',
+    what:['MitoTracker Red goes into <b>active mitochondria</b>, so it only works in living cells','The stain eventually <b>kills the cells</b>, so each well is used once'],
     steps:['Find the next <b>row A</b> well that is <b>not struck through</b>.',
-      '<b>Strike that well through on the lid</b> with the black Sharpie. Write your initials and the time.',
+      '<b>Strike it through on the lid</b> with the black Sharpie. Write your initials and the time.',
       'Use the <b>P20</b> to add <b>20 µL MitoTracker Red</b> to the well. Swirl gently.',
-      'Use the <b>P20</b> to add <b>20 µL Protoslo</b> to slow the cells down <span class="tbc">to optimise</span>.',
-      'Replace the lid and wait <b>a few minutes</b>.',
-      'Put the plate in the EVOS caddy. Image in the <b>RFP</b> channel and in transmitted light.',
-      'Move to the <b>row C control</b> in the same column and compare.'],
-    need:'P20 · tips · MitoTracker · Protoslo · Sharpie · used-tip bucket', chips:'<span class="chip c-mito">M</span>', next:'Record it →'}),
-    'No wash step: MitoTracker shows up within minutes, and the cells stay in the well. Striking through the lid stops the next group staining the same well twice.');
+      'Use the <b>P20</b> to add <b>20 µL Protoslo</b> to slow the cells down.',
+      'Put the lid back on. Tips go in the used-tip bucket.',
+      'Go to the stereo while the stain works. You will come back in about 8 minutes.'],
+    ill:'Photo: pipetting into a 12-well plate + Sharpie strike-through', need:'P20 · tips · MitoTracker · Protoslo · Sharpie', chips:'<span class="chip c-mito">M</span>', next:'Go to stereo →',
+    tip:'All 4 row A wells struck through? Tell your teacher so they can swap in a fresh plate.'}),
+    'Staining comes <b>first</b> so the few minutes MitoTracker needs are spent at the stereo and compound microscopes instead of waiting. This keeps the station to 20 minutes.');
 
-  out+=frame(7,'Workbook record', screen('Workbook',`
+  out+=frame(4,'Stereo microscope · 5–9 min', protoScreen({code:'Stereo', time:'4 min', tl:2, single:true, title:'Watching live <i>Paramecium</i>',
+    what:['Whole, living cells swimming in water','Their slipper shape, and how they spin and change direction','Cilia beat too fast to see one by one, but you can see the cell moving'],
+    q:['Which way do they swim? What happens when they bump into something?','Which parts of MRS GREN can you see evidence of?'],
+    ill:'Photo: stereo microscope + live Paramecium', need:'Stereo microscope (beside the bench)', next:'Go to compound →',
+    tip:'Can\'t see them? Turn the zoom down, focus on the bottom of the dish, then zoom in on anything moving.'}),
+    'Live observation while the stain develops. Students tick MRS GREN evidence for the stereo as they go.');
+
+  out+=frame(5,'Compound microscope · 9–13 min', protoScreen({code:'Compound', time:'4 min', tl:3, single:true, title:'Methylene blue: finding the nucleus',
+    what:['Methylene blue stains DNA dark blue','The large <b>macronucleus</b> and small <b>micronucleus</b> stand out','You can also see the oral groove and food vacuoles'],
+    steps:['Start on <b>10×</b>. Find a blue cell and move it to the centre.','Switch to <b>40×</b>. Use the <b>fine focus</b> only.'],
+    stepsTitle:'How to',
+    q:['Why does one cell have two nuclei?'],
+    ill:'Photo: methylene blue Paramecium at 40×', need:'Compound microscope + prepared slide', chips:'<span class="chip c-mb">MB</span>', next:'Go to EVOS →',
+    tip:'Image blurry at 40×? Go back to 10×, refocus, re-centre the cell, then try 40× again.'}),
+    'The slide is ready to view, so there is no preparation. The short how-to means students don\'t need an educator to find the nucleus.');
+
+  out+=frame(6,'EVOS: image your well · 13–18 min', protoScreen({code:'EVOS', time:'5 min', tl:4, single:true, title:'See the mitochondria glow',
+    what:['<i>Paramecium</i> has many mitochondria to power its thousands of cilia','They show up <b>red</b> in the <b>RFP</b> channel'],
+    steps:['Put the plate in the EVOS caddy, <b>A1 at the top left</b>.','Move to <b>your</b> struck-through well. Use <b>10×</b> and the <b>Trans</b> (brightfield) light to find cells.','Switch to <b>RFP</b>. Raise the brightness until the red dots appear.','<b>Capture</b> and save to your workbook.','Move to the <b>row C control</b> in the same column. Capture it in Trans and RFP to compare.'],
+    stepsTitle:'How to',
+    ill:'Screenshot: EVOS screen with RFP + Trans buttons labelled', need:'EVOS · your stained well · its control', chips:'<span class="chip c-mito">M</span>', next:'Record it →',
+    tip:'No red? Check you are on your own well, and that it has had a few minutes. Cells too fast? Look for ones caught in the Protoslo.'}),
+    'A step-by-step EVOS guide written for students: where the plate goes, which buttons to press and what to compare. The control in row C shows what unstained cells look like in RFP.');
+
+  out+=frame(7,'Record + rotate · 18–20 min', screen('Workbook · ⏱ 2 min',`
+    ${timeline(5)}
     <h5>My <i>Paramecium</i> record</h5>
     <div class="wf-row" style="margin-bottom:6px">
-      ${['Stereo (live)','Compound (MB)','EVOS (MitoTracker)'].map(t=>`<div style="flex:1;display:flex;flex-direction:column;gap:3px"><div class="ph" style="height:54px">＋ ${t} image</div></div>`).join('')}
+      ${['Stereo (live)','Compound (MB)','EVOS (MitoTracker)'].map(t=>`<div style="flex:1;display:flex;flex-direction:column;gap:3px"><div class="ph" style="height:48px">＋ ${t} image</div></div>`).join('')}
     </div>
     <div class="wf-row">
       <div style="flex:1.1;display:flex;flex-direction:column;gap:6px">
         <div class="wf-box"><b>Can you spot…</b>
           <div class="cl">${FEATURES.map(f=>`<div>☐ ${f[0].replace(' (pellicle)','')}</div>`).join('')}</div>
           <div style="color:#5f6b7a;margin-top:2px">Which microscope showed it?</div></div>
-        <div class="wf-box" style="flex:1"><b>Observations</b><div style="border:1px solid #dee2e6;border-radius:4px;height:46px;background:#fff"></div></div>
+        <div class="wf-box"><b>Observations</b><div style="border:1px solid #dee2e6;border-radius:4px;height:34px;background:#fff"></div></div>
+        <div class="wf-box" style="background:#fff9db;border-color:#ffe066"><b>Before you rotate</b>☐ Tips in the bucket ☐ Lid on the plate ☐ Plate back on the bench ☐ Workbook saved</div>
       </div>
       <div class="wf-box" style="flex:1.2;background:#fff" id="mgWrap">${mgGrid()}</div>
     </div>`, 'Workbook'),
-    'One page holds everything: an image slot for each microscope, a checklist of every feature, observations, and the <b>MRS GREN check</b>. For each process and each microscope, students tap <b>?</b> if they can see evidence. It turns into a green ✓ and a box pops up asking them to justify it. <b>Try it: tap any ? in the mock-up.</b>');
+    'One page holds everything: an image slot for each microscope, the feature checklist, observations and the <b>MRS GREN check</b>. Students tap <b>?</b> when they can see evidence; it turns into a green ✓ and a box pops up asking them to justify it (<b>try it in the mock-up</b>). A short "before you rotate" checklist leaves the bench ready for the next group.');
   return out;
 }
 
@@ -1026,6 +1056,7 @@ function render(){
   const s=STATIONS[ST], p=PARTS[s.part];
   document.body.className='st-'+ST;
   document.querySelectorAll('.st').forEach(b=>b.classList.toggle('on',b.dataset.st===ST));
+  document.querySelectorAll('.part').forEach(el=>el.classList.toggle('active',el.classList.contains(s.part)));
   document.getElementById('hdrKicker').innerHTML=`<span class="pill" style="background:var(--part${s.part})">Part ${s.part}</span>${p.title} · ${p.length}`;
   document.getElementById('hdrTitle').textContent=s.name;
   document.getElementById('plateTabBtn').textContent=s.plate;
@@ -1036,7 +1067,7 @@ function render(){
     document.getElementById('featureTable').innerHTML=featureTable();
     document.getElementById('lid12').innerHTML=lid12();
     document.getElementById('well12').innerHTML=well12();
-    document.getElementById('ipadLead').innerHTML='These are wireframes of the web app, in the order students use it. The storyboard follows <i>Paramecium</i> only, and the <b>cheat sheet comes second</b> so students know what to look for. Grey hatched boxes are placeholders for photos.';
+    document.getElementById('ipadLead').innerHTML='These are wireframes of the web app for a <b>20-minute rotation</b>, in the order students use it. Every screen has a timeline bar showing where the group should be, a time budget, and a yellow <b>Stuck?</b> tip so students can work on their own. The cheat sheet comes second and can be opened from any screen. Grey hatched boxes are placeholders for photos.';
     document.getElementById('board').innerHTML=boardA();
   } else {
     WELLS=getWells();
@@ -1052,7 +1083,9 @@ function render(){
 }
 document.getElementById('timeA').innerHTML=partTime('A');
 document.getElementById('timeB').innerHTML=partTime('B');
-document.querySelectorAll('.st').forEach(b=>b.onclick=()=>{ST=b.dataset.st;render();});
+document.querySelectorAll('.st').forEach(b=>b.onclick=e=>{e.stopPropagation();ST=b.dataset.st;render();});
+/* clicking anywhere on a Part block switches to that part of the day (first station), unless already in it */
+document.querySelectorAll('.part').forEach(el=>el.onclick=()=>{const part=el.classList.contains('A')?'A':'B'; if(STATIONS[ST].part!==part){ST=Object.keys(STATIONS).find(k=>STATIONS[k].part===part); render();}});
 document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('nav.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('section.panel').forEach(s=>s.classList.toggle('on',s.id===b.dataset.tab));
