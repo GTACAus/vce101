@@ -47,8 +47,11 @@
   .legend span{display:inline-flex;align-items:center;gap:6px}
   .sw{width:14px;height:14px;border-radius:50%;display:inline-block}
   /* version toggle */
-  body.nopara .para{display:none !important}
-  body:not(.nopara) .nopara{display:none !important}
+  body:not(.v-para) .para{display:none !important}
+  body:not(.v-nopara) .nopara{display:none !important}
+  body:not(.v-mef) .mef{display:none !important}
+  body.v-mef .notmef{display:none !important}
+  body.v-para .nop{display:none !important}
   /* iPad wireframes */
   .board{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
   @media (max-width:900px){.board{grid-template-columns:1fr}}
@@ -82,7 +85,7 @@
   }
 </style>
 </head>
-<body>
+<body class="v-para">
 <header>
   <div class="top">
     <div>
@@ -90,8 +93,9 @@
       <h1>Fluoro station: bench activity summary</h1>
     </div>
     <div class="toggle" role="group" aria-label="Version">
-      <button id="v-para" class="on" onclick="setVersion(true)">With paramecium</button>
-      <button id="v-nopara" onclick="setVersion(false)">Without paramecium</button>
+      <button id="b-para" class="on" onclick="setVersion('para')">With paramecium</button>
+      <button id="b-nopara" onclick="setVersion('nopara')">Without paramecium</button>
+      <button id="b-mef" onclick="setVersion('mef')">MEFs: healthy vs diseased</button>
     </div>
   </div>
   <nav class="tabs" role="tablist">
@@ -111,14 +115,17 @@
     <b>nucleus</b>, <b>cytoskeleton</b> and <b>mitochondria</b> for their scavenger hunt.
     <span class="para">This version uses <b>three cell types</b>: SF21 insect cells, mouse embryonic fibroblasts (MEFs) and <i>Paramecium</i>.</span>
     <span class="nopara">This version uses <b>two cell types</b>: SF21 insect cells and mouse embryonic fibroblasts (MEFs).</span>
+    <span class="mef">This version uses <b>one cell type, mouse embryonic fibroblasts (MEFs), in two conditions</b>: <b>healthy</b> and <b>diseased</b>. Students compare the two.</span>
   </p>
 
   <div class="grid3">
     <div class="card">
       <h3 style="margin-top:0">Samples</h3>
       <ul class="tight">
-        <li><b>SF21</b>: insect (moth ovary) cells, fixed, grown directly on the base of the well</li>
-        <li><b>MEFs</b>: mouse embryonic fibroblasts, fixed, on round coverslips</li>
+        <li class="notmef"><b>SF21</b>: insect (moth ovary) cells, fixed, grown directly on the base of the well</li>
+        <li class="notmef"><b>MEFs</b>: mouse embryonic fibroblasts, fixed, on round coverslips</li>
+        <li class="mef"><b>Healthy MEFs</b>: mouse embryonic fibroblasts, fixed, on round coverslips</li>
+        <li class="mef"><b>Diseased MEFs</b>: the same cells under the disease condition, fixed, on round coverslips. Disease model: <span class="tbc">TBC</span></li>
         <li class="para"><b>Live <i>Paramecium</i></b>: free-swimming in culture medium</li>
         <li class="para"><b>Fixed <i>Paramecium</i></b>: fixed onto poly-L-lysine coated coverslips</li>
       </ul>
@@ -126,10 +133,11 @@
     <div class="card">
       <h3 style="margin-top:0">How samples are presented</h3>
       <ul class="tight">
-        <li>One <b>6-well plate per bench side</b>. <span class="para">All 6 wells are used, with no duplicate wells.</span><span class="nopara">4 wells are used. Column 3 is left empty.</span></li>
+        <li>One <b>6-well plate per bench side</b>. <span class="para">All 6 wells are used, with no duplicate wells.</span><span class="nop">4 wells are used. Column 3 is left empty.</span></li>
         <li>The <b>lid is labelled</b> with the sample name and <b>colour stickers</b> showing which stain each well gets</li>
-        <li>SF21 and MEF wells use the <b>same addition method</b>, so one protocol covers both</li>
-        <li>SF21 and MEF fluoro wells are <b>MitoTracker Red pre-stained</b> before fixing, shown by a dashed red ring on the lid</li>
+        <li class="notmef">SF21 and MEF wells use the <b>same addition method</b>, so one protocol covers both</li>
+        <li class="mef">Column 1 is <b>healthy</b> and column 2 is <b>diseased</b>. Both get exactly the same stains, so the condition is the only difference.</li>
+        <li>The DAPI/FITC wells (row A) are <b>MitoTracker Red pre-stained</b> before fixing, shown by a dashed red ring on the lid</li>
       </ul>
     </div>
     <div class="card">
@@ -147,15 +155,19 @@
     <h3 style="margin-top:0">Plate layout at a glance</h3>
     <table>
       <thead><tr><th>Well</th><th>Sample</th><th>State</th><th>Already on sample</th><th>Students add</th><th>Protocol</th></tr></thead>
+      <tbody id="plateRows"></tbody>
+    </table>
+  </div>
+
+  <div class="card mef">
+    <h3 style="margin-top:0">Healthy vs diseased MEFs</h3>
+    <p style="margin:0 0 8px">Both conditions are fixed and stained in the same way. Disease model / treatment: <span class="tbc">TBC</span>. What students compare:</p>
+    <table>
+      <thead><tr><th>Structure</th><th>Stain / channel</th><th>Compare healthy vs diseased</th></tr></thead>
       <tbody>
-        <tr><td>A1</td><td>SF21</td><td>Fixed, well base</td><td><span class="chip c-pre">MitoTracker Red</span></td><td><span class="chip c-dapi">DAPI</span> <span class="chip c-fitc">Phalloidin-FITC</span></td><td>P2</td></tr>
-        <tr><td>A2</td><td>MEF</td><td>Fixed, coverslip</td><td><span class="chip c-pre">MitoTracker Red</span></td><td><span class="chip c-dapi">DAPI</span> <span class="chip c-fitc">Phalloidin-FITC</span></td><td>P2</td></tr>
-        <tr class="para"><td>A3</td><td>Live <i>Paramecium</i></td><td>Live, in medium</td><td class="na">none</td><td><span class="chip c-mito">MitoTracker Red</span></td><td>P4</td></tr>
-        <tr class="nopara"><td>A3</td><td colspan="5" class="na">Empty (not used in this version)</td></tr>
-        <tr><td>B1</td><td>SF21</td><td>Fixed, well base</td><td class="na">none</td><td><span class="chip c-mb">Methylene blue</span></td><td>P1</td></tr>
-        <tr><td>B2</td><td>MEF <span class="star">★</span></td><td>Fixed, coverslip</td><td class="na">none</td><td><span class="chip c-mb">Methylene blue</span></td><td>P1 (worked example)</td></tr>
-        <tr class="para"><td>B3</td><td>Fixed <i>Paramecium</i></td><td>Fixed, poly-L-lysine coverslip</td><td class="na">none</td><td><span class="chip c-mb">Methylene blue</span></td><td>P3</td></tr>
-        <tr class="nopara"><td>B3</td><td colspan="5" class="na">Empty (not used in this version)</td></tr>
+        <tr><td><b>Nucleus</b></td><td><span class="chip c-dapi">DAPI</span> <span class="chip c-mb">Methylene blue</span></td><td>Size, shape, number per cell, how evenly it stains</td></tr>
+        <tr><td><b>Cytoskeleton</b></td><td><span class="chip c-fitc">Phalloidin-FITC</span></td><td>Whether the actin fibres are long and organised or disrupted; overall cell shape and spread</td></tr>
+        <tr><td><b>Mitochondria</b></td><td><span class="chip c-pre">MitoTracker Red (pre-stained)</span></td><td>Amount of red signal and whether mitochondria form networks or fragments</td></tr>
       </tbody>
     </table>
   </div>
@@ -165,16 +177,7 @@
       <h3 style="margin-top:0">Scavenger hunt: where to find each structure</h3>
       <table>
         <thead><tr><th>Structure</th><th>Where to find it</th></tr></thead>
-        <tbody>
-          <tr><td><b>Nucleus</b></td><td>
-            SF21 + MEF with <span class="chip c-dapi">DAPI</span> (A1, A2)<br>
-            SF21 + MEF with <span class="chip c-mb">methylene blue</span> (B1, B2)<br>
-            <span class="para">Fixed <i>Paramecium</i> with <span class="chip c-mb">methylene blue</span> (B3)</span></td></tr>
-          <tr><td><b>Cytoskeleton</b> (actin)</td><td>SF21 + MEF with <span class="chip c-fitc">Phalloidin-FITC</span> (A1, A2)</td></tr>
-          <tr><td><b>Mitochondria</b></td><td>
-            SF21 + MEF, <span class="chip c-pre">MitoTracker Red pre-stained</span> (A1, A2)<br>
-            <span class="para">Live <i>Paramecium</i> with <span class="chip c-mito">MitoTracker Red</span> (A3)</span></td></tr>
-        </tbody>
+        <tbody id="huntRows"></tbody>
       </table>
     </div>
     <div class="card">
@@ -188,8 +191,8 @@
           <tr><td><span class="chip c-mb">Methylene blue</span></td><td>DNA / nucleic acids</td><td>Dark blue nucleus</td><td>Transmitted light</td></tr>
         </tbody>
       </table>
-      <p class="explain">DAPI and phalloidin-FITC are supplied as <b>one premixed tube</b>, so it is one addition for SF21 and MEF wells.
-        <span class="para">There are 3 stain tubes per side.</span><span class="nopara">There are 2 stain tubes per side, because MitoTracker is only pre-applied.</span></p>
+      <p class="explain">DAPI and phalloidin-FITC are supplied as <b>one premixed tube</b>, so it is one addition for <span class="notmef">SF21 and MEF</span><span class="mef">healthy and diseased</span> wells.
+        <span class="para">There are 3 stain tubes per side.</span><span class="nop">There are 2 stain tubes per side, because MitoTracker is only pre-applied.</span></p>
     </div>
   </div>
 
@@ -198,13 +201,13 @@
       <h3 style="margin-top:0">How the station runs</h3>
       <div class="flow">
         <span class="n">Welcome screen</span><span class="a">→</span>
-        <span class="n">Worked example: methylene blue on MEFs <span class="star">★</span></span><span class="a">→</span>
+        <span class="n">Worked example: methylene blue on <span class="mef">healthy </span>MEFs <span class="star">★</span></span><span class="a">→</span>
         <span class="n">Choose 1–2 more wells</span><span class="a">→</span>
         <span class="n">Image on EVOS</span><span class="a">→</span>
         <span class="n">Record in workbook</span>
       </div>
       <ul class="tight">
-        <li>Each student or pair prepares <b>2 of the <span class="para">6</span><span class="nopara">4</span> wells</b> because of time limits.
+        <li>Each student or pair prepares <b>2 of the <span class="para">6</span><span class="nop">4</span> wells</b> because of time limits.
           Between them the side completes the whole plate, so there is plenty to see.</li>
         <li>Everyone can image <b>every</b> well on the plate, including wells other people prepared.</li>
         <li>Group size per side: <span class="tbc">TBC</span>. Time at station: <span class="tbc">TBC</span>.</li>
@@ -244,7 +247,7 @@
 <section class="panel" id="plate">
   <h2>6-well sample plate</h2>
   <p class="lead">Left: the <b>lid</b> as students see it, with the sample name and stain stickers. Right: what is <b>in each well</b> under the lid.
-    <span class="nopara">Column 3 is left empty in this version.</span></p>
+    <span class="nop">Column 3 is left empty in this version.</span><span class="mef"> Column 1 = healthy, column 2 = diseased.</span></p>
   <div class="grid2">
     <div><h3 style="margin-top:0">Lid (labels + stickers)</h3><div class="svgwrap" id="lidSvg"></div></div>
     <div><h3 style="margin-top:0">Wells (contents)</h3><div class="svgwrap" id="wellSvg"></div></div>
@@ -270,16 +273,55 @@
 </main>
 
 <script>
-let PARA = true;
+let V = 'para', PARA = true, MEF = false;
 
-const WELLS = [
-  {id:'A1', r:0,c:0, sample:'SF21', sub:'fixed · well base', add:['D','F'], pre:true, kind:'sf21', proto:'P2'},
-  {id:'A2', r:0,c:1, sample:'MEF', sub:'fixed · coverslip', add:['D','F'], pre:true, kind:'mef', proto:'P2'},
-  {id:'A3', r:0,c:2, sample:'Live Paramecium', sub:'live · in medium', add:['M'], para:true, kind:'paralive', proto:'P4'},
-  {id:'B1', r:1,c:0, sample:'SF21', sub:'fixed · well base', add:['MB'], kind:'sf21', proto:'P1'},
-  {id:'B2', r:1,c:1, sample:'MEF ★', sub:'fixed · coverslip', add:['MB'], kind:'mef', proto:'P1'},
-  {id:'B3', r:1,c:2, sample:'Fixed Paramecium', sub:'fixed · PLL coverslip', add:['MB'], para:true, kind:'parafix', proto:'P3'}
-];
+const PRE_TXT = 'Fixed after <b>MitoTracker Red</b> was added to the live cells.';
+function getWells(){
+  const empty = (id,r,c)=>({id,r,c,empty:true,add:[]});
+  if(MEF) return [
+    {id:'A1', r:0,c:0, sample:'Healthy MEF', lid:['Healthy','MEF'], sub:'fixed · coverslip', state:'Fixed, coverslip', add:['D','F'], pre:true, kind:'mef', proto:'P2',
+      info:['Healthy MEFs on a round coverslip. '+PRE_TXT,'Students add the DAPI/phalloidin-FITC mix. Shows the <b>nucleus</b>, <b>cytoskeleton</b> and <b>mitochondria</b>. Compare with A2.']},
+    {id:'A2', r:0,c:1, sample:'Diseased MEF', lid:['Diseased','MEF'], sub:'fixed · coverslip', state:'Fixed, coverslip', add:['D','F'], pre:true, kind:'mefd', proto:'P2',
+      info:['Diseased MEFs on a round coverslip (disease model <span class="tbc">TBC</span>). '+PRE_TXT,'Students add the DAPI/phalloidin-FITC mix, the same method as A1. Compare with the healthy cells in A1.']},
+    empty('A3',0,2),
+    {id:'B1', r:1,c:0, sample:'Healthy MEF ★', lid:['Healthy','MEF ★'], sub:'fixed · coverslip', state:'Fixed, coverslip', add:['MB'], kind:'mef', proto:'P1', star:true,
+      info:['Healthy MEFs on a round coverslip, fixed. Not pre-stained. <span class="star">★ Worked example</span>','Students add <b>methylene blue</b>. Shows the <b>nucleus</b>. Everyone starts with this protocol.']},
+    {id:'B2', r:1,c:1, sample:'Diseased MEF', lid:['Diseased','MEF'], sub:'fixed · coverslip', state:'Fixed, coverslip', add:['MB'], kind:'mefd', proto:'P1',
+      info:['Diseased MEFs on a round coverslip, fixed. Not pre-stained.','Students add <b>methylene blue</b>. Compare the <b>nucleus</b> with the healthy cells in B1.']},
+    empty('B3',1,2)
+  ];
+  return [
+    {id:'A1', r:0,c:0, sample:'SF21', sub:'fixed · well base', state:'Fixed, well base', add:['D','F'], pre:true, kind:'sf21', proto:'P2',
+      info:['SF21 cells grown directly on the base of the well. '+PRE_TXT,'Students add the DAPI/phalloidin-FITC mix to see the <b>nucleus</b> and <b>cytoskeleton</b>. The <b>mitochondria</b> are already red.']},
+    {id:'A2', r:0,c:1, sample:'MEF', sub:'fixed · coverslip', state:'Fixed, coverslip', add:['D','F'], pre:true, kind:'mef', proto:'P2',
+      info:['MEFs on a round coverslip. '+PRE_TXT,'Students add the DAPI/phalloidin-FITC mix, the same method as A1. Shows the <b>nucleus</b>, <b>cytoskeleton</b> and <b>mitochondria</b>.']},
+    PARA ? {id:'A3', r:0,c:2, sample:'Live Paramecium', lid:['Live','Paramecium'], ital:true, sub:'live · in medium', state:'Live, in medium', add:['M'], kind:'paralive', proto:'P4',
+      info:['Live, free-swimming <i>Paramecium</i> in culture medium.','Students add <b>MitoTracker Red</b>, which only works in living cells. Shows the <b>mitochondria</b>.']} : empty('A3',0,2),
+    {id:'B1', r:1,c:0, sample:'SF21', sub:'fixed · well base', state:'Fixed, well base', add:['MB'], kind:'sf21', proto:'P1',
+      info:['SF21 cells grown on the base of the well and fixed. Not pre-stained.','Students add <b>methylene blue</b>. Shows the <b>nucleus</b> in transmitted light.']},
+    {id:'B2', r:1,c:1, sample:'MEF ★', sub:'fixed · coverslip', state:'Fixed, coverslip', add:['MB'], kind:'mef', proto:'P1', star:true,
+      info:['MEFs on a round coverslip, fixed. Not pre-stained. <span class="star">★ Worked example</span>','Students add <b>methylene blue</b>. Shows the <b>nucleus</b>. Everyone starts with this protocol.']},
+    PARA ? {id:'B3', r:1,c:2, sample:'Fixed Paramecium', lid:['Fixed','Paramecium'], ital:true, sub:'fixed · PLL coverslip', state:'Fixed, poly-L-lysine coverslip', add:['MB'], kind:'parafix', proto:'P3',
+      info:['<i>Paramecium</i> fixed onto a <b>poly-L-lysine</b> coated coverslip.','Students add <b>methylene blue</b>. Shows the <b>nucleus</b> (macronucleus). Can also be explored on the fluoro scope.']} : empty('B3',1,2)
+  ];
+}
+let WELLS = getWells();
+const sampleHtml = w => w.sample.replace('Paramecium','<i>Paramecium</i>').replace(' ★',' <span class="star">★</span>');
+const CHIP = {D:'<span class="chip c-dapi">DAPI</span>',F:'<span class="chip c-fitc">Phalloidin-FITC</span>',M:'<span class="chip c-mito">MitoTracker Red</span>',MB:'<span class="chip c-mb">Methylene blue</span>'};
+
+function plateRows(){
+  return WELLS.map(w=> w.empty
+    ? `<tr><td>${w.id}</td><td colspan="5" class="na">Empty (not used in this version)</td></tr>`
+    : `<tr><td>${w.id}</td><td>${sampleHtml(w)}</td><td>${w.state}</td><td>${w.pre?'<span class="chip c-pre">MitoTracker Red</span>':'<span class="na">none</span>'}</td><td>${w.add.map(k=>CHIP[k]).join(' ')}</td><td>${w.proto}${w.star?' (worked example)':''}</td></tr>`).join('');
+}
+function huntRows(){
+  const live = WELLS.filter(w=>!w.empty);
+  const line = (test,chip)=>{const ws=live.filter(test); if(!ws.length) return '';
+    return `${ws.map(w=>sampleHtml(w).replace(/ <span class="star">★<\/span>/,'')+' ('+w.id+')').join(', ')} with ${chip}<br>`;};
+  return `<tr><td><b>Nucleus</b></td><td>${line(w=>w.add.includes('D'),'<span class="chip c-dapi">DAPI</span>')}${line(w=>w.add.includes('MB'),'<span class="chip c-mb">methylene blue</span>')}</td></tr>
+    <tr><td><b>Cytoskeleton</b> (actin)</td><td>${line(w=>w.add.includes('F'),'<span class="chip c-fitc">Phalloidin-FITC</span>')}</td></tr>
+    <tr><td><b>Mitochondria</b></td><td>${line(w=>w.pre,'<span class="chip c-pre">MitoTracker Red, pre-stained</span>')}${line(w=>w.add.includes('M'),'<span class="chip c-mito">MitoTracker Red</span>')}</td></tr>`;
+}
 const STK = {D:['#4263eb','D'],F:['#2f9e44','F'],M:['#e03131','M'],MB:['#1d3557','MB']};
 
 /* seeded random so drawings are stable */
@@ -298,17 +340,16 @@ function lidSvg(){
   let s='';
   WELLS.forEach(w=>{
     const x=cx(w),y=cy(w);
-    if(w.para && !PARA){
+    if(w.empty){
       s+=`<circle cx="${x}" cy="${y}" r="${R}" fill="#fff" stroke="#ced4da" stroke-dasharray="6 5" stroke-width="2"/>
           <text x="${x}" y="${y+5}" text-anchor="middle" font-size="14" fill="#adb5bd">Empty</text>`;
       return;
     }
     s+=`<circle cx="${x}" cy="${y}" r="${R}" fill="#fff" stroke="#adb5bd" stroke-width="2"/>`;
     if(w.pre) s+=`<circle cx="${x}" cy="${y}" r="${R-6}" fill="none" stroke="#e03131" stroke-width="2" stroke-dasharray="5 4"/>`;
-    const name=w.sample.split(' ');
-    if(name.length>1 && w.kind.startsWith('para')){
-      s+=`<text x="${x}" y="${y-30}" text-anchor="middle" font-size="13" font-weight="700">${name[0]}</text>
-          <text x="${x}" y="${y-14}" text-anchor="middle" font-size="13" font-weight="700" font-style="italic">${name[1]}</text>`;
+    if(w.lid){
+      s+=`<text x="${x}" y="${y-30}" text-anchor="middle" font-size="${w.ital?13:15}" font-weight="700">${w.lid[0]}</text>
+          <text x="${x}" y="${y-13}" text-anchor="middle" font-size="${w.ital?13:15}" font-weight="700" ${w.ital?'font-style="italic"':''}>${w.lid[1]}</text>`;
     } else s+=`<text x="${x}" y="${y-18}" text-anchor="middle" font-size="17" font-weight="700">${w.sample}</text>`;
     s+=`<text x="${x}" y="${y+2}" text-anchor="middle" font-size="10.5" fill="#5f6b7a">${w.sub}</text>`;
     const n=w.add.length + (w.pre?1:0), gap=34, start=x-(n-1)*gap/2;
@@ -325,18 +366,19 @@ function wellSvg(){
   let s='';
   WELLS.forEach((w,idx)=>{
     const x=cx(w),y=cy(w),rnd=rng(idx*97+13);
-    if(w.para && !PARA){
+    if(w.empty){
       s+=`<circle cx="${x}" cy="${y}" r="${R}" fill="#fff" stroke="#ced4da" stroke-width="2"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" fill="#adb5bd">empty</text>`;return;}
     s+=`<circle cx="${x}" cy="${y}" r="${R}" fill="#eef6fb" stroke="#868e96" stroke-width="2"/>`;
     const tint = w.add.includes('MB')?'#1d3557':w.add.includes('M')?'#e03131':'#495057';
-    if(w.kind==='mef'||w.kind==='parafix'){
+    if(w.kind==='mef'||w.kind==='mefd'||w.kind==='parafix'){
       s+=`<circle cx="${x}" cy="${y}" r="48" fill="#fdfefe" stroke="#99c2d6" stroke-width="1.5"/>`;
     }
-    for(let k=0;k<(w.kind==='sf21'?34:w.kind==='mef'?12:w.kind==='paralive'?7:9);k++){
+    for(let k=0;k<(w.kind==='sf21'?34:w.kind==='mef'?12:w.kind==='mefd'?11:w.kind==='paralive'?7:9);k++){
       const lim = (w.kind==='sf21'||w.kind==='paralive')?R-12:40;
       let a=rnd()*Math.PI*2, d=Math.sqrt(rnd())*lim, px=x+Math.cos(a)*d, py=y+Math.sin(a)*d, rot=rnd()*180;
       if(w.kind==='sf21') s+=`<circle cx="${px}" cy="${py}" r="3.6" fill="none" stroke="${tint}" stroke-width="1.2"/><circle cx="${px}" cy="${py}" r="1.3" fill="${tint}"/>`;
       if(w.kind==='mef') s+=`<g transform="translate(${px} ${py}) rotate(${rot})"><path d="M-11 0 Q-3 -4 0 -3 Q3 -4 11 0 Q3 4 0 3 Q-3 4 -11 0Z" fill="none" stroke="${tint}" stroke-width="1.1"/><circle r="1.8" fill="${tint}"/></g>`;
+      if(w.kind==='mefd') s+=`<g transform="translate(${px} ${py}) rotate(${rot})"><path d="M-6 -2 Q-4 -6 1 -5 Q6 -4 6 0 Q7 4 2 5 Q-3 6 -5 3 Q-8 1 -6 -2Z" fill="none" stroke="${tint}" stroke-width="1.1"/><circle cx="-1" r="2.4" fill="${tint}"/><circle cx="8" cy="-3" r="1.2" fill="none" stroke="${tint}" stroke-width=".8"/><circle cx="-8" cy="4" r="1" fill="none" stroke="${tint}" stroke-width=".8"/></g>`;
       if(w.kind.startsWith('para')) s+=`<g transform="translate(${px} ${py}) rotate(${rot})"><ellipse rx="10" ry="4.5" fill="none" stroke="${tint}" stroke-width="1.2"/>${w.kind==='parafix'?`<ellipse rx="3" ry="1.8" fill="${tint}"/>`:`<path d="M10 0 l5 -2 M10 0 l5 2" stroke="${tint}" stroke-width=".8"/>`}</g>`;
     }
     s+=`<rect x="${x-56}" y="${y+R-6}" width="112" height="22" rx="11" fill="#fff" stroke="#ced4da"/>
@@ -345,18 +387,10 @@ function wellSvg(){
   return plateFrame(s);
 }
 
-const WELL_INFO = {
-  A1:['SF21 cells grown directly on the base of the well. Fixed after <b>MitoTracker Red</b> was added to the live cells.','Students add the DAPI/phalloidin-FITC mix to see the <b>nucleus</b> and <b>cytoskeleton</b>. The <b>mitochondria</b> are already red.'],
-  A2:['MEFs on a round coverslip. Fixed after <b>MitoTracker Red</b> was added to the live cells.','Students add the DAPI/phalloidin-FITC mix, the same method as A1. Shows the <b>nucleus</b>, <b>cytoskeleton</b> and <b>mitochondria</b>.'],
-  A3:['Live, free-swimming <i>Paramecium</i> in culture medium.','Students add <b>MitoTracker Red</b>, which only works in living cells. Shows the <b>mitochondria</b>.'],
-  B1:['SF21 cells grown on the base of the well and fixed. Not pre-stained.','Students add <b>methylene blue</b>. Shows the <b>nucleus</b> in transmitted light.'],
-  B2:['MEFs on a round coverslip, fixed. Not pre-stained. <span class="star">★ Worked example</span>','Students add <b>methylene blue</b>. Shows the <b>nucleus</b>. Everyone starts with this protocol.'],
-  B3:['<i>Paramecium</i> fixed onto a <b>poly-L-lysine</b> coated coverslip.','Students add <b>methylene blue</b>. Shows the <b>nucleus</b> (macronucleus). Can also be explored on the fluoro scope.']
-};
 function wellCards(){
-  return WELLS.filter(w=>PARA||!w.para).map(w=>`<div class="card"><b>${w.id}: ${w.sample.replace('Paramecium','<i>Paramecium</i>')}</b>
+  return WELLS.filter(w=>!w.empty).map(w=>`<div class="card"><b>${w.id}: ${sampleHtml(w)}</b>
     <div style="margin:6px 0">${w.pre?'<span class="chip c-pre">MitoTracker ✓</span> ':''}${w.add.map(k=>({D:'<span class="chip c-dapi">DAPI</span>',F:'<span class="chip c-fitc">FITC</span>',M:'<span class="chip c-mito">MitoTracker</span>',MB:'<span class="chip c-mb">Methylene blue</span>'})[k]).join(' ')}</div>
-    <div style="font-size:.88rem">${WELL_INFO[w.id][0]}</div><div style="font-size:.88rem;margin-top:6px;color:var(--muted)">${WELL_INFO[w.id][1]} Protocol <b>${w.proto}</b>.</div></div>`).join('');
+    <div style="font-size:.88rem">${w.info[0]}</div><div style="font-size:.88rem;margin-top:6px;color:var(--muted)">${w.info[1]} Protocol <b>${w.proto}</b>.</div></div>`).join('');
 }
 
 /* ---------- bench ---------- */
@@ -404,7 +438,7 @@ function benchSide(x0,label){
   <text x="${x0+90}" y="752" text-anchor="middle" font-size="9.5" fill="#5f6b7a">tips (P20 / P200)</text>
   <g transform="${g(15,765)}">
     <rect width="150" height="100" rx="8" fill="#fff" stroke="#495057" stroke-width="2"/>
-    ${WELLS.map(w=>{const off=w.para&&!PARA;const col=off?'#fff':w.add.includes('MB')?'#1d3557':w.add.includes('M')?'#e03131':'#2f9e44';
+    ${WELLS.map(w=>{const off=w.empty;const col=off?'#fff':w.add.includes('MB')?'#1d3557':w.add.includes('M')?'#e03131':'#2f9e44';
       return `<circle cx="${30+w.c*45}" cy="${30+w.r*42}" r="16" fill="${off?'#fff':'#f8f9fa'}" stroke="#868e96" ${off?'stroke-dasharray="3 3"':''}/>${off?'':`<circle cx="${30+w.c*45}" cy="${30+w.r*42}" r="6" fill="${col}"/>`}`}).join('')}
   </g>
   <text x="${x0+90}" y="880" text-anchor="middle" font-size="9.5" fill="#5f6b7a">6-well sample plate</text>
@@ -469,10 +503,10 @@ function protoScreen(o){
     <div style="margin-top:6px;display:flex;justify-content:space-between"><span class="btn ghost">← Back</span><span>${o.chips}</span><span class="btn">${o.side==='A'?'Go to method →':'Image it →'}</span></div>`);
 }
 
-const P = {
-  P1:{code:'P1 · Methylene blue', side:'B', title:'Methylene blue: fixed MEF (B2) <span class="star">★</span> or SF21 (B1)',
+function protos(){ return {
+  P1:{code:'P1 · Methylene blue', side:'B', title: MEF?'Methylene blue: healthy MEF (B1) <span class="star">★</span> or diseased MEF (B2)':'Methylene blue: fixed MEF (B2) <span class="star">★</span> or SF21 (B1)',
     steps:['Tilt the plate and use the <b>P200</b> to remove the PBS from the well. Put it in the waste tube.',
-      'Pipette <b>50 µL 0.5% methylene blue</b> onto the coverslip (MEF) or the centre of the well (SF21). Incubate for <b>2 min</b>.',
+      MEF?'Pipette <b>50 µL 0.5% methylene blue</b> onto the coverslip. Incubate for <b>2 min</b>.':'Pipette <b>50 µL 0.5% methylene blue</b> onto the coverslip (MEF) or the centre of the well (SF21). Incubate for <b>2 min</b>.',
       'Remove the stain with the P200 and put it in the waste tube.',
       'Gently add <b>200 µL PBS</b> down the side of the well, then remove it. Repeat until the PBS stays clear.',
       'Leave <b>200 µL PBS</b> on the cells so they stay wet. Replace the lid.',
@@ -480,15 +514,15 @@ const P = {
     need:'P200 · tips · MB tube · PBS · waste', chips:'<span class="chip c-mb">MB</span>'},
   P1A:{code:'P1 · Methylene blue', side:'A', title:'Methylene blue: looking for compartments containing DNA',
     what:['Stains DNA (and RNA) dark blue','Lightly stains the whole cell, which makes it easier to see','The nucleus stands out as the darkest structure'],
-    q:['Can you find the organelle that contains DNA?','Compare the shape and size of MEF and SF21 nuclei.'],
+    q:['Can you find the organelle that contains DNA?',MEF?'Compare the nuclei of healthy and diseased MEFs: size, shape, staining.':'Compare the shape and size of MEF and SF21 nuclei.'],
     ill:'Illustration: cell with dark blue nucleus', need:'Bench items shown as icons', chips:'<span class="chip c-mb">MB</span>'},
-  P2A:{code:'P2 · DAPI + phalloidin-FITC', side:'A', title:'Three colours in one cell: fixed SF21 (A1) or MEF (A2)',
+  P2A:{code:'P2 · DAPI + phalloidin-FITC', side:'A', title: MEF?'Three colours in one cell: healthy (A1) or diseased (A2) MEF':'Three colours in one cell: fixed SF21 (A1) or MEF (A2)',
     what:['<b style="color:#4263eb">DAPI</b> binds DNA, so the nucleus glows blue','<b style="color:#2f9e44">Phalloidin-FITC</b> binds actin, so the cytoskeleton glows green','<b style="color:#e03131">MitoTracker Red</b> was added while the cells were alive, so the mitochondria are already red','Fluorescence: a stain absorbs one colour of light and gives off a longer-wavelength colour. EVOS filter cubes pick one colour at a time.'],
-    q:['Which structures can you see in each channel?','Why was MitoTracker added <i>before</i> the cells were fixed?'],
+    q:['Which structures can you see in each channel?','Why was MitoTracker added <i>before</i> the cells were fixed?',...(MEF?['How do the actin fibres and mitochondria differ between healthy and diseased cells?']:[])],
     ill:'Illustration: excitation → emission diagram + 3-channel overlay', need:'Bench items shown as icons', chips:'<span class="chip c-dapi">D</span> <span class="chip c-fitc">F</span>'},
-  P2:{code:'P2 · DAPI + phalloidin-FITC', side:'B', title:'DAPI + phalloidin-FITC: fixed SF21 (A1) or MEF (A2)',
+  P2:{code:'P2 · DAPI + phalloidin-FITC', side:'B', title: MEF?'DAPI + phalloidin-FITC: healthy (A1) or diseased (A2) MEF':'DAPI + phalloidin-FITC: fixed SF21 (A1) or MEF (A2)',
     steps:['Tilt the plate and use the <b>P200</b> to remove the PBS. Put it in the waste tube.',
-      'Pipette <b>50 µL DAPI/phalloidin-FITC mix</b> onto the cells (same method for SF21 and MEF).',
+      'Pipette <b>50 µL DAPI/phalloidin-FITC mix</b> onto the cells (same method for '+(MEF?'healthy and diseased':'SF21 and MEF')+').',
       'Replace the lid and put the plate in the <b>dark box</b> for <b>15 min</b> <span class="tbc">to optimise</span>.',
       'Remove the stain and put it in the waste tube.',
       'Wash with <b>200 µL PBS</b>, then remove it. Repeat ×3.',
@@ -508,17 +542,23 @@ const P = {
       'Wash: let the cells settle, remove <b>200 µL</b> from the top of the liquid, and replace it with fresh medium. Repeat ×2 <span class="tbc">method TBC: cells swim</span>.',
       'Image in the <b>RFP</b> channel and in transmitted light.'],
     need:'P20 · P200 · tips · Mito tube · medium · waste · dark box', chips:'<span class="chip c-mito">M</span>'}
-};
+};}
 
 function board(){
-  const exps = [
+  const P = protos();
+  const exps = MEF ? [
+    ['B1','Healthy MEF + methylene blue','<span class="chip c-mb">MB</span>',true],
+    ['B2','Diseased MEF + methylene blue','<span class="chip c-mb">MB</span>'],
+    ['A1','Healthy MEF + DAPI / FITC','<span class="chip c-dapi">D</span> <span class="chip c-fitc">F</span>'],
+    ['A2','Diseased MEF + DAPI / FITC','<span class="chip c-dapi">D</span> <span class="chip c-fitc">F</span>']
+  ] : [
     ['B2','MEF + methylene blue','<span class="chip c-mb">MB</span>',true],
     ['B1','SF21 + methylene blue','<span class="chip c-mb">MB</span>'],
     ['A1','SF21 + DAPI / FITC','<span class="chip c-dapi">D</span> <span class="chip c-fitc">F</span>'],
     ['A2','MEF + DAPI / FITC','<span class="chip c-dapi">D</span> <span class="chip c-fitc">F</span>'],
     ...(PARA?[['A3','Live <i>Paramecium</i> + MitoTracker','<span class="chip c-mito">M</span>'],['B3','Fixed <i>Paramecium</i> + MB','<span class="chip c-mb">MB</span>']]:[])
   ];
-  const cells = PARA?['SF21','MEF','<i>Paramecium</i>']:['SF21','MEF'];
+  const cells = MEF?['Healthy MEF','Diseased MEF']:PARA?['SF21','MEF','<i>Paramecium</i>']:['SF21','MEF'];
   let out='';
   out+=frame(1,'Welcome + onboarding', screen('Welcome',`
     <h5>Welcome to the Fluoro station</h5>
@@ -536,17 +576,17 @@ function board(){
     ${exps.map(e=>`<div class="wf-box" style="${e[3]?'border-color:#e8590c;background:#fff4e6':''}"><b>${e[0]} · ${e[1]}${e[3]?' <span class="star">★</span>':''}</b>${e[2]}<div style="margin-top:3px;color:#5f6b7a">${e[3]?'Everyone starts here':'Tap to choose'}</div></div>`).join('')}
     </div>
     <div style="margin-top:6px;color:#5f6b7a">Your group shares one plate. Check which wells are already taken.</div>`),
-    `A choose-your-own-adventure menu. <b>B2</b> (methylene blue on MEFs) is the worked example. Each student or pair then picks 1–2 more wells, so the side completes all ${PARA?6:4} between them.`);
+    `A choose-your-own-adventure menu. <b>${MEF?'B1':'B2'}</b> (methylene blue on ${MEF?'healthy ':''}MEFs) is the worked example. Each student or pair then picks 1–2 more wells, so the side completes all ${PARA?6:4} between them.`);
 
   out+=frame(3,'Protocol P1: Side A (worked example)', protoScreen(P.P1A),'Side A, in the treatment-card style: what the stain shows, an illustration placeholder and guiding questions.');
-  out+=frame(4,'Protocol P1: Side B method <span class="star">★</span>', protoScreen(P.P1),'Numbered steps with volumes. Uses the same 0.5% methylene blue and 2 min incubation as the treatment cards. Covers both MEF (B2) and SF21 (B1).');
+  out+=frame(4,'Protocol P1: Side B method <span class="star">★</span>', protoScreen(P.P1),'Numbered steps with volumes. Uses the same 0.5% methylene blue and 2 min incubation as the treatment cards. '+(MEF?'Covers both healthy (B1) and diseased (B2) MEFs.':'Covers both MEF (B2) and SF21 (B1).'));
   out+=frame(5,'Protocol P2: Side A (fluorescence explained)', protoScreen(P.P2A),'Explains fluorescence and all three stains. MitoTracker is shown as already added.');
-  out+=frame(6,'Protocol P2: Side B method', protoScreen(P.P2),'One addition of the premixed stain, optimised to work the same way for SF21 and MEF. Then a dark incubation, PBS washes and 3-channel imaging.');
+  out+=frame(6,'Protocol P2: Side B method', protoScreen(P.P2),'One addition of the premixed stain, the same for '+(MEF?'healthy and diseased MEFs':'SF21 and MEF')+'. Then a dark incubation, PBS washes and 3-channel imaging.');
   if(PARA){
     out+=frame(7,'Protocol P3: fixed <i>Paramecium</i>', protoScreen(P.P3),'Same method as P1, on a poly-L-lysine coverslip so the cells are not washed away.');
     out+=frame(8,'Protocol P4: live <i>Paramecium</i>', protoScreen(P.P4),'MitoTracker needs living cells. The wash step is flagged for optimisation because the cells swim.');
   }
-  const tabs = PARA?['MEF','SF21','Paramecium']:['MEF','SF21'];
+  const tabs = MEF?['Healthy MEF','Diseased MEF']:PARA?['MEF','SF21','Paramecium']:['MEF','SF21'];
   out+=frame(PARA?9:7,'Workbook record', screen('Workbook',`
     <div class="sidetabs">${tabs.map((t,i)=>`<span class="${i===0?'on':''}">${t}</span>`).join('')}</div>
     <div class="wf-row">
@@ -572,11 +612,13 @@ function render(){
   document.getElementById('wellSvg').innerHTML=wellSvg();
   document.getElementById('wellCards').innerHTML=wellCards();
   document.getElementById('board').innerHTML=board();
+  document.getElementById('plateRows').innerHTML=plateRows();
+  document.getElementById('huntRows').innerHTML=huntRows();
 }
-function setVersion(p){
-  PARA=p; document.body.classList.toggle('nopara',!p);
-  document.getElementById('v-para').classList.toggle('on',p);
-  document.getElementById('v-nopara').classList.toggle('on',!p);
+function setVersion(v){
+  V=v; PARA=v==='para'; MEF=v==='mef'; WELLS=getWells();
+  document.body.className='v-'+v;
+  ['para','nopara','mef'].forEach(k=>document.getElementById('b-'+k).classList.toggle('on',k===v));
   render();
 }
 document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{
