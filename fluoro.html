@@ -26,6 +26,10 @@
   .part .ptitle{font-weight:700;font-size:1.02rem;margin:2px 0 6px}
   .part .ptime{font-size:.8rem;color:var(--muted);margin-bottom:8px}
   .part .ptime b{color:var(--ink)}
+  .cycle{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch;margin:8px 0}
+  .cycle .stage{flex:1 1 150px;background:#fff;border:1px solid #99e9f2;border-radius:10px;padding:8px 10px;font-size:.84rem}
+  .cycle .stage b{display:block;color:var(--partB);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+  .cycle .stage i.ex{display:block;color:var(--muted);margin-top:3px}
   .pstory{font-size:.8rem;background:#fff;border-radius:8px;padding:8px 10px;margin-bottom:4px;line-height:1.4}
   /* MRS GREN tap grid (iPad wireframe) */
   .mg{width:100%;border-collapse:collapse;font-size:.64rem}
@@ -139,6 +143,7 @@
     <div class="plabel">Part B</div>
     <div class="ptitle">Research</div>
     <div class="ptime" id="timeB"></div>
+    <div class="pstory"><b>The story:</b> in Part A students asked "How do these cells survive?" Now they step into the shoes of a <b>researcher</b>. They use fluorescent stains and the <b>cycle of inquiry</b> to ask what microscopy can reveal about how a cell works, and what changes when it goes wrong.</div>
     <button class="st" data-st="sfmef">SF21 and MEFs<small>Fluoro station · DAPI / FITC / methylene blue</small></button>
     <button class="st" data-st="mef">MEFs: healthy vs diseased<small>Fluoro station · same stains, two conditions</small></button>
   </div>
@@ -254,6 +259,7 @@
   <!-- ---------- PART B: SF21 / MEFs ---------- -->
   <div class="onlyB">
     <h2>Activity summary</h2>
+    <div class="card" style="background:#e3fafc;border-color:#99e9f2" id="storyB"></div>
     <p class="lead">
       Students prepare and image fixed cells on an EVOS M5000 fluorescence microscope to find the
       <b>nucleus</b>, <b>cytoskeleton</b> and <b>mitochondria</b> for their scavenger hunt.
@@ -930,6 +936,7 @@ function boardB(){
   let out='';
   out+=frame(1,'Welcome + onboarding', screen('Welcome',`
     <h5>Welcome to the Fluoro station</h5>
+    <div class="wf-box" style="background:#e3fafc;border-color:#99e9f2;margin-bottom:6px"><b>Today you are the researcher</b>${inq().big} Use the cycle of inquiry to break it into smaller questions you can test with your stains.</div>
     <div class="wf-row" style="margin-bottom:6px">${cells.map(c=>`<div class="wf-box" style="text-align:center"><div class="ph" style="height:46px;margin-bottom:4px">${c} image</div><b>${c}</b></div>`).join('')}</div>
     <div class="wf-row">
       <div class="wf-box"><b>How this app works</b><ol class="steps"><li>Pick a well</li><li>Follow its protocol</li><li>Image on the EVOS</li><li>Record in your workbook</li></ol></div>
@@ -937,19 +944,29 @@ function boardB(){
     </div>
     <div style="text-align:right;margin-top:6px"><span class="btn">Start →</span></div>`),
     'Gives an overview of the cells to explore. Explains that each well has its own protocol and that the bench has everything needed, shown with icons and lab-photo placeholders.');
-  out+=frame(2,'Choose your wells', screen('Choose',`
+  const Q=inq();
+  out+=frame(2,'Plan your inquiry', screen('Cycle of inquiry',`
+    <h5>Break down the big question</h5>
+    <div class="wf-box" style="background:#e3fafc;border-color:#99e9f2;margin-bottom:6px"><b>Big question</b>${Q.big}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      ${[['1 · My smaller question',Q.q],['2 · What I know + my best guess',Q.know],['3 · How I will test it',Q.test],['4 · What do I see?',Q.see]].map(c=>`<div class="wf-box"><b>${c[0]}</b><div style="border:1px dashed #ced4da;border-radius:4px;background:#fff;padding:3px 5px;color:#868e96;min-height:30px">e.g. ${c[1]}</div></div>`).join('')}
+    </div>
+    <div class="wf-box" style="margin-top:6px"><b>5 · Reflect</b><div style="color:#868e96">e.g. ${Q.reflect}</div></div>
+    <div style="margin-top:6px;display:flex;justify-content:space-between"><span style="color:#5f6b7a">↻ Enter the cycle at any point</span><span class="btn">Choose wells to test it →</span></div>`),
+    'An interactive planning task before anyone pipettes. Students write a smaller question, what they know and their best guess, and which well and stain will test it. They fill in what they see and their reflection after imaging. The worked example in grey uses the same "I used to think… now I think…" structure as the cycle of inquiry slides.');
+  out+=frame(3,'Choose your wells', screen('Choose',`
     <h5>Start with the worked example, then choose more wells</h5>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px">
     ${exps.map(e=>`<div class="wf-box" style="${e[3]?'border-color:#e8590c;background:#fff4e6':''}"><b>${e[0]} · ${e[1]}${e[3]?' <span class="star">★</span>':''}</b>${e[2]}<div style="margin-top:3px;color:#5f6b7a">${e[3]?'Everyone starts here':'Tap to choose'}</div></div>`).join('')}
     </div>
     <div style="margin-top:6px;color:#5f6b7a">Your group shares one plate. Check which wells are already taken.</div>`),
     `A choose-your-own-adventure menu. <b>${MEF()?'B1':'B2'}</b> (methylene blue on ${MEF()?'healthy ':''}MEFs) is the worked example. Each student or pair then picks 1–2 more wells, so the side completes all 4 between them.`);
-  out+=frame(3,'Protocol P1: Side A (worked example)', protoScreen(P.P1A),'Side A, in the treatment-card style: what the stain shows, an illustration placeholder and guiding questions.');
-  out+=frame(4,'Protocol P1: Side B method <span class="star">★</span>', protoScreen(P.P1),'Numbered steps with volumes. Uses the same 0.5% methylene blue and 2 min incubation as the treatment cards. '+(MEF()?'Covers both healthy (B1) and diseased (B2) MEFs.':'Covers both MEF (B2) and SF21 (B1).'));
-  out+=frame(5,'Protocol P2: Side A (fluorescence explained)', protoScreen(P.P2A),'Explains fluorescence and all three stains. MitoTracker is shown as already added.');
-  out+=frame(6,'Protocol P2: Side B method', protoScreen(P.P2),'One addition of the premixed stain, the same for '+(MEF()?'healthy and diseased MEFs':'SF21 and MEF')+'. Then a dark incubation, PBS washes and 3-channel imaging.');
+  out+=frame(4,'Protocol P1: Side A (worked example)', protoScreen(P.P1A),'Side A, in the treatment-card style: what the stain shows, an illustration placeholder and guiding questions.');
+  out+=frame(5,'Protocol P1: Side B method <span class="star">★</span>', protoScreen(P.P1),'Numbered steps with volumes. Uses the same 0.5% methylene blue and 2 min incubation as the treatment cards. '+(MEF()?'Covers both healthy (B1) and diseased (B2) MEFs.':'Covers both MEF (B2) and SF21 (B1).'));
+  out+=frame(6,'Protocol P2: Side A (fluorescence explained)', protoScreen(P.P2A),'Explains fluorescence and all three stains. MitoTracker is shown as already added.');
+  out+=frame(7,'Protocol P2: Side B method', protoScreen(P.P2),'One addition of the premixed stain, the same for '+(MEF()?'healthy and diseased MEFs':'SF21 and MEF')+'. Then a dark incubation, PBS washes and 3-channel imaging.');
   const tabs = MEF()?['Healthy MEF','Diseased MEF']:['MEF','SF21'];
-  out+=frame(7,'Workbook record', screen('Workbook',`
+  out+=frame(8,'Workbook record', screen('Workbook',`
     <div class="sidetabs">${tabs.map((t,i)=>`<span class="${i===0?'on':''}">${t}</span>`).join('')}</div>
     <div class="wf-row">
       <div style="flex:1.1;display:flex;flex-direction:column;gap:6px">
@@ -961,10 +978,46 @@ function boardB(){
           <div>☐ Nucleus</div><div>☐ Cytoskeleton</div><div>☐ Mitochondria</div>
           <div style="color:#5f6b7a;margin-top:2px">Which stain / channel showed it?</div></div>
         <div class="wf-box" style="flex:1"><b>Observations</b><div style="border:1px solid #dee2e6;border-radius:4px;height:38px;background:#fff"></div></div>
+        <div class="wf-box" style="background:#e3fafc;border-color:#99e9f2"><b>Reflect</b><div style="color:#5f6b7a">I used to think… but now I think…</div><div style="border:1px solid #dee2e6;border-radius:4px;height:30px;background:#fff;margin-top:3px"></div></div>
       </div>
     </div>`, 'Workbook'),
-    `Tabs across the top (${tabs.join(' / ')}) all use the same format: image upload, a "Can you spot" checklist and a text box for observations.`);
+    `Tabs across the top (${tabs.join(' / ')}) all use the same format: image upload, a "Can you spot" checklist, a text box for observations, and a <b>Reflect</b> box ("I used to think… but now I think…") that closes the cycle of inquiry.`);
   return out;
+}
+
+/* ================= PART B story (cycle of inquiry) ================= */
+function inq(){ return MEF() ? {
+    big:'<b>"How can microscopy help us diagnose disease?"</b> What does a healthy cell look like, and how can we tell when something has gone wrong?',
+    intro:'Diseases often start with changes inside cells that are far too small to see with the naked eye. Researchers compare healthy and diseased cells side by side, using fluorescent stains to make the nucleus, cytoskeleton and mitochondria visible. At this station students use the same healthy and diseased mouse cells and the same stains as a research lab, and look for the differences.',
+    q:'"Are the mitochondria different in diseased cells?"',
+    know:'I know mitochondria make the energy a cell needs. I hypothesise that diseased cells have fewer, or more broken-up, mitochondria.',
+    test:'Compare MitoTracker Red in A1 (healthy) and A2 (diseased) in the RFP channel, using the same EVOS settings for both.',
+    see:'What do the red mitochondria look like in each well? Long networks or small fragments?',
+    reflect:'I used to think a diseased cell would look obviously different, but now I think the differences are inside, in its organelles.'
+  } : {
+    big:'<b>"Do all animal cells build themselves the same way?"</b> Insect cells (SF21) and mouse cells (MEFs) both have the same organelles, but are they arranged the same way?',
+    intro:'Our bodies are made of trillions of cells that each have a job, and researchers grow cells like these in the lab to understand how they work. Many structures inside a cell are almost see-through, so researchers use fluorescent stains to light up one structure at a time. At this station students compare an insect cell and a mouse cell using the same stains a research lab would use.',
+    q:'"Do both cells have a cytoskeleton?"',
+    know:'I know animal cells keep their shape with a cytoskeleton. I hypothesise that both SF21 and MEFs have actin filaments.',
+    test:'Stain A1 (SF21) and A2 (MEF) with phalloidin-FITC and image both in the GFP channel.',
+    see:'Where is the green actin in each cell? Long fibres across the cell, or a ring around the edge?',
+    reflect:'I used to think all animal cells looked the same inside, but now I think the shape of a cell depends on how its cytoskeleton is arranged.'
+  };
+}
+function storyB(){
+  const Q=inq();
+  return `<h3>Story: thinking like a researcher</h3>
+    <p style="margin:0 0 6px">In Part A students asked <b>"How do these cells survive?"</b> In Part B they step into the role of a researcher, applying microscopy to a research question. ${Q.intro}</p>
+    <p style="margin:0 0 4px"><b>Big question:</b> ${Q.big}</p>
+    <p style="margin:6px 0 0">Students use the <b>STEM cycle of inquiry</b>, which they can enter at any point, to break the big question into a smaller one they can test at the bench. Worked example:</p>
+    <div class="cycle">
+      <div class="stage"><b>Question</b>${Q.q}</div>
+      <div class="stage"><b>Know + best guess</b>${Q.know}</div>
+      <div class="stage"><b>Test</b>${Q.test}</div>
+      <div class="stage"><b>What do we see?</b><i class="ex">${Q.see}</i></div>
+      <div class="stage"><b>Reflect</b>${Q.reflect}</div>
+    </div>
+    <p class="hint" style="margin:0">↻ After reflecting, students ask a new smaller question and go round the cycle again with another well or stain.</p>`;
 }
 
 /* ================= wiring ================= */
@@ -987,6 +1040,7 @@ function render(){
     document.getElementById('board').innerHTML=boardA();
   } else {
     WELLS=getWells();
+    document.getElementById('storyB').innerHTML=storyB();
     document.getElementById('plateRows').innerHTML=plateRows();
     document.getElementById('huntRows').innerHTML=huntRows();
     document.getElementById('lidSvg').innerHTML=lidSvg();
