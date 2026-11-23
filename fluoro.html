@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fluoro station – VCE101 bench activity summary</title>
+<style>
+  :root{
+    --ink:#1f2933; --muted:#5f6b7a; --line:#d5dbe3; --bg:#f6f8fa; --card:#fff;
+    --dapi:#4263eb; --fitc:#2f9e44; --mito:#e03131; --mb:#1d3557; --accent:#0b7285;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45}
+  header{background:#fff;border-bottom:1px solid var(--line);padding:16px 28px 0;position:sticky;top:0;z-index:5}
+  .top{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between}
+  h1{font-size:1.5rem;margin:0}
+  .kicker{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;font-size:.85rem}
+  .toggle button{border:0;background:#fff;padding:7px 14px;cursor:pointer;color:var(--muted)}
+  .toggle button.on{background:var(--accent);color:#fff}
+  nav.tabs{display:flex;gap:4px;margin-top:14px;flex-wrap:wrap}
+  nav.tabs button{border:1px solid var(--line);border-bottom:0;background:var(--bg);padding:9px 16px;border-radius:8px 8px 0 0;cursor:pointer;font-size:.92rem;color:var(--muted)}
+  nav.tabs button.on{background:var(--card);color:var(--ink);font-weight:600;box-shadow:0 1px 0 #fff}
+  main{max-width:1180px;margin:0 auto;padding:24px 28px 60px}
+  section.panel{display:none}
+  section.panel.on{display:block}
+  h2{font-size:1.25rem;margin:0 0 4px}
+  h3{font-size:1.02rem;margin:22px 0 8px}
+  p.lead{color:var(--muted);margin:0 0 18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:16px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media (max-width:860px){.grid2,.grid3{grid-template-columns:1fr}}
+  table{width:100%;border-collapse:collapse;font-size:.9rem}
+  th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f1f3f5;font-weight:600}
+  .chip{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;padding:2px 8px;border-radius:999px;color:#fff;font-weight:600;white-space:nowrap}
+  .c-dapi{background:var(--dapi)} .c-fitc{background:var(--fitc)} .c-mito{background:var(--mito)} .c-mb{background:var(--mb)}
+  .c-pre{background:#fff;color:var(--mito);border:1.5px dashed var(--mito)}
+  .tbc{background:#fff3bf;border:1px dashed #e8b100;border-radius:4px;padding:0 5px;font-size:.82em;color:#7a5c00;white-space:nowrap}
+  .tick{color:var(--fitc);font-weight:700}
+  .na{color:#adb5bd}
+  ul.tight{margin:6px 0;padding-left:20px} ul.tight li{margin:3px 0}
+  svg text{font-family:"Segoe UI",system-ui,Arial,sans-serif}
+  .svgwrap{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:.85rem;margin-top:10px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:14px;height:14px;border-radius:50%;display:inline-block}
+  /* version toggle */
+  body.nopara .para{display:none !important}
+  body:not(.nopara) .nopara{display:none !important}
+  /* iPad wireframes */
+  .board{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+  @media (max-width:900px){.board{grid-template-columns:1fr}}
+  .frame .num{display:inline-block;background:var(--accent);color:#fff;border-radius:999px;width:24px;height:24px;text-align:center;font-weight:700;font-size:.8rem;line-height:24px;margin-right:6px}
+  .frame h4{margin:0 0 8px;font-size:.95rem}
+  .ipad{background:#2b2f33;border-radius:22px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+  .screen{background:#fff;border-radius:8px;min-height:300px;font-size:.7rem;display:flex;flex-direction:column}
+  .sbar{background:#f1f3f5;border-bottom:1px solid var(--line);padding:5px 10px;display:flex;justify-content:space-between;color:var(--muted);font-size:.62rem}
+  .sbody{padding:10px 12px;flex:1}
+  .sbody h5{margin:0 0 6px;font-size:.88rem}
+  .wf-row{display:flex;gap:8px}
+  .wf-box{border:1px solid var(--line);border-radius:6px;padding:6px 7px;flex:1;background:#fbfcfd}
+  .wf-box > b{display:block;font-size:.72rem;margin-bottom:2px}
+  .ph{background:repeating-linear-gradient(45deg,#f1f3f5,#f1f3f5 6px,#e9ecef 6px,#e9ecef 12px);border:1px dashed #adb5bd;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted);text-align:center;font-size:.62rem;padding:4px}
+  .btn{display:inline-block;background:var(--accent);color:#fff;border-radius:5px;padding:3px 9px;font-size:.66rem;font-weight:600}
+  .btn.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+  .steps{margin:4px 0 0;padding-left:16px} .steps li{margin:2px 0}
+  .sidetabs{display:flex;gap:4px;margin-bottom:6px}
+  .sidetabs span{border:1px solid var(--line);border-radius:4px;padding:1px 7px;font-size:.62rem;color:var(--muted)}
+  .sidetabs span.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .explain{font-size:.82rem;color:var(--muted);margin-top:8px}
+  .star{color:#e8590c;font-weight:700}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.85rem;margin:6px 0 18px}
+  .flow span.n{background:#fff;border:1px solid var(--line);border-radius:8px;padding:5px 10px}
+  .flow span.a{color:var(--muted)}
+  @media print{
+    header{position:static} nav.tabs,.toggle{display:none}
+    section.panel{display:block !important;page-break-after:always}
+    body{background:#fff} main{padding:0}
+    .card,.svgwrap{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div>
+      <div class="kicker">GTAC · VCE101 Inquiry into cell function using microscopy imaging</div>
+      <h1>Fluoro station: bench activity summary</h1>
+    </div>
+    <div class="toggle" role="group" aria-label="Version">
+      <button id="v-para" class="on" onclick="setVersion(true)">With paramecium</button>
+      <button id="v-nopara" onclick="setVersion(false)">Without paramecium</button>
+    </div>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button class="on" data-tab="summary">Summary</button>
+    <button data-tab="bench">Lab bench</button>
+    <button data-tab="plate">6-well plate</button>
+    <button data-tab="ipad">iPad storyboard</button>
+  </nav>
+</header>
+
+<main>
+<!-- ============================ SUMMARY ============================ -->
+<section class="panel on" id="summary">
+  <h2>Activity summary</h2>
+  <p class="lead">
+    Students prepare and image fixed and live cells on an EVOS M5000 fluorescence microscope to find the
+    <b>nucleus</b>, <b>cytoskeleton</b> and <b>mitochondria</b> for their scavenger hunt.
+    <span class="para">This version uses <b>three cell types</b>: SF21 insect cells, mouse embryonic fibroblasts (MEFs) and <i>Paramecium</i>.</span>
+    <span class="nopara">This version uses <b>two cell types</b>: SF21 insect cells and mouse embryonic fibroblasts (MEFs).</span>
+  </p>
+
+  <div class="grid3">
+    <div class="card">
+      <h3 style="margin-top:0">Samples</h3>
+      <ul class="tight">
+        <li><b>SF21</b>: insect (moth ovary) cells, fixed, grown directly on the base of the well</li>
+        <li><b>MEFs</b>: mouse embryonic fibroblasts, fixed, on round coverslips</li>
+        <li class="para"><b>Live <i>Paramecium</i></b>: free-swimming in culture medium</li>
+        <li class="para"><b>Fixed <i>Paramecium</i></b>: fixed onto poly-L-lysine coated coverslips</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">How samples are presented</h3>
+      <ul class="tight">
+        <li>One <b>6-well plate per bench side</b>. <span class="para">All 6 wells are used, with no duplicate wells.</span><span class="nopara">4 wells are used. Column 3 is left empty.</span></li>
+        <li>The <b>lid is labelled</b> with the sample name and <b>colour stickers</b> showing which stain each well gets</li>
+        <li>SF21 and MEF wells use the <b>same addition method</b>, so one protocol covers both</li>
+        <li>SF21 and MEF fluoro wells are <b>MitoTracker Red pre-stained</b> before fixing, shown by a dashed red ring on the lid</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Imaging</h3>
+      <ul class="tight">
+        <li>The whole plate goes into the <b>EVOS M5000 caddy</b>, so no slides are needed</li>
+        <li>Fluorescence channels: <b>DAPI</b> (blue), <b>GFP</b> (green, for FITC) and <b>RFP</b> (red, for MitoTracker)</li>
+        <li>Methylene blue wells are imaged in <b>transmitted light</b>. They can also be explored on the fluoro scope if students are interested.</li>
+        <li>Images are uploaded to the iPad workbook</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Plate layout at a glance</h3>
+    <table>
+      <thead><tr><th>Well</th><th>Sample</th><th>State</th><th>Already on sample</th><th>Students add</th><th>Protocol</th></tr></thead>
+      <tbody>
+        <tr><td>A1</td><td>SF21</td><td>Fixed, well base</td><td><span class="chip c-pre">MitoTracker Red</span></td><td><span class="chip c-dapi">DAPI</span> <span class="chip c-fitc">Phalloidin-FITC</span></td><td>P2</td></tr>
+        <tr><td>A2</td><td>MEF</td><td>Fixed, coverslip</td><td><span class="chip c-pre">MitoTracker Red</span></td><td><span class="chip c-dapi">DAPI</span> <span class="chip c-fitc">Phalloidin-FITC</span></td><td>P2</td></tr>
+        <tr class="para"><td>A3</td><td>Live <i>Paramecium</i></td><td>Live, in medium</td><td class="na">none</td><td><span class="chip c-mito">MitoTracker Red</span></td><td>P4</td></tr>
+        <tr class="nopara"><td>A3</td><td colspan="5" class="na">Empty (not used in this version)</td></tr>
+        <tr><td>B1</td><td>SF21</td><td>Fixed, well base</td><td class="na">none</td><td><span class="chip c-mb">Methylene blue</span></td><td>P1</td></tr>
+        <tr><td>B2</td><td>MEF <span class="star">★</span></td><td>Fixed, coverslip</td><td class="na">none</td><td><span class="chip c-mb">Methylene blue</span></td><td>P1 (worked example)</td></tr>
+        <tr class="para"><td>B3</td><td>Fixed <i>Paramecium</i></td><td>Fixed, poly-L-lysine coverslip</td><td class="na">none</td><td><span class="chip c-mb">Methylene blue</span></td><td>P3</td></tr>
+        <tr class="nopara"><td>B3</td><td colspan="5" class="na">Empty (not used in this version)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">Scavenger hunt: where to find each structure</h3>
+      <table>
+        <thead><tr><th>Structure</th><th>Where to find it</th></tr></thead>
+        <tbody>
+          <tr><td><b>Nucleus</b></td><td>
+            SF21 + MEF with <span class="chip c-dapi">DAPI</span> (A1, A2)<br>
+            SF21 + MEF with <span class="chip c-mb">methylene blue</span> (B1, B2)<br>
+            <span class="para">Fixed <i>Paramecium</i> with <span class="chip c-mb">methylene blue</span> (B3)</span></td></tr>
+          <tr><td><b>Cytoskeleton</b> (actin)</td><td>SF21 + MEF with <span class="chip c-fitc">Phalloidin-FITC</span> (A1, A2)</td></tr>
+          <tr><td><b>Mitochondria</b></td><td>
+            SF21 + MEF, <span class="chip c-pre">MitoTracker Red pre-stained</span> (A1, A2)<br>
+            <span class="para">Live <i>Paramecium</i> with <span class="chip c-mito">MitoTracker Red</span> (A3)</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Stains on the bench</h3>
+      <table>
+        <thead><tr><th>Stain</th><th>Binds / labels</th><th>Seen as</th><th>View with</th></tr></thead>
+        <tbody>
+          <tr><td><span class="chip c-dapi">DAPI</span></td><td>DNA</td><td>Blue nucleus</td><td>DAPI channel</td></tr>
+          <tr><td><span class="chip c-fitc">Phalloidin-FITC</span></td><td>Actin filaments</td><td>Green fibres</td><td>GFP channel</td></tr>
+          <tr><td><span class="chip c-mito">MitoTracker Red</span></td><td>Active mitochondria (live cells only)</td><td>Red dots / threads</td><td>RFP channel</td></tr>
+          <tr><td><span class="chip c-mb">Methylene blue</span></td><td>DNA / nucleic acids</td><td>Dark blue nucleus</td><td>Transmitted light</td></tr>
+        </tbody>
+      </table>
+      <p class="explain">DAPI and phalloidin-FITC are supplied as <b>one premixed tube</b>, so it is one addition for SF21 and MEF wells.
+        <span class="para">There are 3 stain tubes per side.</span><span class="nopara">There are 2 stain tubes per side, because MitoTracker is only pre-applied.</span></p>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">How the station runs</h3>
+      <div class="flow">
+        <span class="n">Welcome screen</span><span class="a">→</span>
+        <span class="n">Worked example: methylene blue on MEFs <span class="star">★</span></span><span class="a">→</span>
+        <span class="n">Choose 1–2 more wells</span><span class="a">→</span>
+        <span class="n">Image on EVOS</span><span class="a">→</span>
+        <span class="n">Record in workbook</span>
+      </div>
+      <ul class="tight">
+        <li>Each student or pair prepares <b>2 of the <span class="para">6</span><span class="nopara">4</span> wells</b> because of time limits.
+          Between them the side completes the whole plate, so there is plenty to see.</li>
+        <li>Everyone can image <b>every</b> well on the plate, including wells other people prepared.</li>
+        <li>Group size per side: <span class="tbc">TBC</span>. Time at station: <span class="tbc">TBC</span>.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Equipment per bench side</h3>
+      <ul class="tight">
+        <li>EVOS M5000 fluorescence microscope with plate caddy</li>
+        <li>iPad (protocols + workbook web app)</li>
+        <li>P20 and P200 pipettes on a rack, with a box of tips</li>
+        <li>Stain rack: methylene blue, DAPI/phalloidin-FITC mix<span class="para">, MitoTracker Red</span></li>
+        <li>50 mL tube of PBS and a waste tube</li>
+        <li>6-well plate of samples (labelled lid)</li>
+        <li>Shared: used-tip bucket and a dark box for incubations</li>
+        <li>Nearby: big-screen signpost, <span class="para">stereo microscope with live <i>Paramecium</i>, </span>compound microscope with unstained MEFs</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ BENCH ============================ -->
+<section class="panel" id="bench">
+  <h2>Lab bench layout (top-down)</h2>
+  <p class="lead">The bench has two mirrored sides, A and B, so two groups work at once. Each side has its own EVOS, iPad, pipettes, stains and sample plate. The used-tip bucket and dark box are shared in the middle.</p>
+  <div class="svgwrap" id="benchSvg"></div>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--mb)"></i>Methylene blue</span>
+    <span><i class="sw" style="background:linear-gradient(90deg,var(--dapi) 50%,var(--fitc) 50%)"></i>DAPI + phalloidin-FITC mix</span>
+    <span class="para"><i class="sw" style="background:var(--mito)"></i>MitoTracker Red</span>
+    <span><i class="sw" style="background:#a5d8ff"></i>PBS</span>
+    <span><i class="sw" style="background:#ced4da"></i>Waste tube</span>
+  </div>
+</section>
+
+<!-- ============================ PLATE ============================ -->
+<section class="panel" id="plate">
+  <h2>6-well sample plate</h2>
+  <p class="lead">Left: the <b>lid</b> as students see it, with the sample name and stain stickers. Right: what is <b>in each well</b> under the lid.
+    <span class="nopara">Column 3 is left empty in this version.</span></p>
+  <div class="grid2">
+    <div><h3 style="margin-top:0">Lid (labels + stickers)</h3><div class="svgwrap" id="lidSvg"></div></div>
+    <div><h3 style="margin-top:0">Wells (contents)</h3><div class="svgwrap" id="wellSvg"></div></div>
+  </div>
+  <div class="legend">
+    <span><span class="chip c-dapi">D</span> add DAPI</span>
+    <span><span class="chip c-fitc">F</span> add phalloidin-FITC</span>
+    <span class="para"><span class="chip c-mito">M</span> add MitoTracker Red</span>
+    <span><span class="chip c-mb">MB</span> add methylene blue</span>
+    <span><span class="chip c-pre">M✓</span> MitoTracker already added (pre-stained)</span>
+  </div>
+
+  <h3>What's in each well</h3>
+  <div class="grid3" id="wellCards"></div>
+</section>
+
+<!-- ============================ IPAD ============================ -->
+<section class="panel" id="ipad">
+  <h2>iPad storyboard</h2>
+  <p class="lead">These are wireframes of the web app, in the order students use it. Grey hatched boxes are placeholders for lab photos and illustrations. Protocol pages follow the treatment-card style: <b>Side A</b> explains what the stain shows and asks questions, and <b>Side B</b> gives the numbered method.</p>
+  <div class="board" id="board"></div>
+</section>
+</main>
+
+<script>
+let PARA = true;
+
+const WELLS = [
+  {id:'A1', r:0,c:0, sample:'SF21', sub:'fixed · well base', add:['D','F'], pre:true, kind:'sf21', proto:'P2'},
+  {id:'A2', r:0,c:1, sample:'MEF', sub:'fixed · coverslip', add:['D','F'], pre:true, kind:'mef', proto:'P2'},
+  {id:'A3', r:0,c:2, sample:'Live Paramecium', sub:'live · in medium', add:['M'], para:true, kind:'paralive', proto:'P4'},
+  {id:'B1', r:1,c:0, sample:'SF21', sub:'fixed · well base', add:['MB'], kind:'sf21', proto:'P1'},
+  {id:'B2', r:1,c:1, sample:'MEF ★', sub:'fixed · coverslip', add:['MB'], kind:'mef', proto:'P1'},
+  {id:'B3', r:1,c:2, sample:'Fixed Paramecium', sub:'fixed · PLL coverslip', add:['MB'], para:true, kind:'parafix', proto:'P3'}
+];
+const STK = {D:['#4263eb','D'],F:['#2f9e44','F'],M:['#e03131','M'],MB:['#1d3557','MB']};
+
+/* seeded random so drawings are stable */
+function rng(seed){return ()=>{seed=(seed*9301+49297)%233280;return seed/233280;}}
+
+function plateFrame(inner){
+  return `<svg viewBox="0 0 600 420" width="100%" role="img">
+    <path d="M30 20 H560 L580 40 V400 H30 Z" fill="#f8f9fa" stroke="#868e96" stroke-width="2"/>
+    ${[0,1,2].map(c=>`<text x="${140+c*170}" y="44" text-anchor="middle" font-size="14" fill="#868e96">${c+1}</text>`).join('')}
+    ${['A','B'].map((r,i)=>`<text x="48" y="${145+i*175}" font-size="14" fill="#868e96">${r}</text>`).join('')}
+    ${inner}</svg>`;
+}
+const cx=w=>140+w.c*170, cy=w=>140+w.r*175, R=72;
+
+function lidSvg(){
+  let s='';
+  WELLS.forEach(w=>{
+    const x=cx(w),y=cy(w);
+    if(w.para && !PARA){
+      s+=`<circle cx="${x}" cy="${y}" r="${R}" fill="#fff" stroke="#ced4da" stroke-dasharray="6 5" stroke-width="2"/>
+          <text x="${x}" y="${y+5}" text-anchor="middle" font-size="14" fill="#adb5bd">Empty</text>`;
+      return;
+    }
+    s+=`<circle cx="${x}" cy="${y}" r="${R}" fill="#fff" stroke="#adb5bd" stroke-width="2"/>`;
+    if(w.pre) s+=`<circle cx="${x}" cy="${y}" r="${R-6}" fill="none" stroke="#e03131" stroke-width="2" stroke-dasharray="5 4"/>`;
+    const name=w.sample.split(' ');
+    if(name.length>1 && w.kind.startsWith('para')){
+      s+=`<text x="${x}" y="${y-30}" text-anchor="middle" font-size="13" font-weight="700">${name[0]}</text>
+          <text x="${x}" y="${y-14}" text-anchor="middle" font-size="13" font-weight="700" font-style="italic">${name[1]}</text>`;
+    } else s+=`<text x="${x}" y="${y-18}" text-anchor="middle" font-size="17" font-weight="700">${w.sample}</text>`;
+    s+=`<text x="${x}" y="${y+2}" text-anchor="middle" font-size="10.5" fill="#5f6b7a">${w.sub}</text>`;
+    const n=w.add.length + (w.pre?1:0), gap=34, start=x-(n-1)*gap/2;
+    let i=0;
+    w.add.forEach(k=>{const [col,t]=STK[k];const sx=start+gap*i++;
+      s+=`<circle cx="${sx}" cy="${y+32}" r="14" fill="${col}"/><text x="${sx}" y="${y+36.5}" text-anchor="middle" font-size="${t.length>1?10:13}" font-weight="700" fill="#fff">${t}</text>`;});
+    if(w.pre){const sx=start+gap*i;
+      s+=`<circle cx="${sx}" cy="${y+32}" r="14" fill="#fff" stroke="#e03131" stroke-width="2" stroke-dasharray="3 2"/><text x="${sx}" y="${y+36.5}" text-anchor="middle" font-size="10" font-weight="700" fill="#e03131">M✓</text>`;}
+  });
+  return plateFrame(s);
+}
+
+function wellSvg(){
+  let s='';
+  WELLS.forEach((w,idx)=>{
+    const x=cx(w),y=cy(w),rnd=rng(idx*97+13);
+    if(w.para && !PARA){
+      s+=`<circle cx="${x}" cy="${y}" r="${R}" fill="#fff" stroke="#ced4da" stroke-width="2"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="13" fill="#adb5bd">empty</text>`;return;}
+    s+=`<circle cx="${x}" cy="${y}" r="${R}" fill="#eef6fb" stroke="#868e96" stroke-width="2"/>`;
+    const tint = w.add.includes('MB')?'#1d3557':w.add.includes('M')?'#e03131':'#495057';
+    if(w.kind==='mef'||w.kind==='parafix'){
+      s+=`<circle cx="${x}" cy="${y}" r="48" fill="#fdfefe" stroke="#99c2d6" stroke-width="1.5"/>`;
+    }
+    for(let k=0;k<(w.kind==='sf21'?34:w.kind==='mef'?12:w.kind==='paralive'?7:9);k++){
+      const lim = (w.kind==='sf21'||w.kind==='paralive')?R-12:40;
+      let a=rnd()*Math.PI*2, d=Math.sqrt(rnd())*lim, px=x+Math.cos(a)*d, py=y+Math.sin(a)*d, rot=rnd()*180;
+      if(w.kind==='sf21') s+=`<circle cx="${px}" cy="${py}" r="3.6" fill="none" stroke="${tint}" stroke-width="1.2"/><circle cx="${px}" cy="${py}" r="1.3" fill="${tint}"/>`;
+      if(w.kind==='mef') s+=`<g transform="translate(${px} ${py}) rotate(${rot})"><path d="M-11 0 Q-3 -4 0 -3 Q3 -4 11 0 Q3 4 0 3 Q-3 4 -11 0Z" fill="none" stroke="${tint}" stroke-width="1.1"/><circle r="1.8" fill="${tint}"/></g>`;
+      if(w.kind.startsWith('para')) s+=`<g transform="translate(${px} ${py}) rotate(${rot})"><ellipse rx="10" ry="4.5" fill="none" stroke="${tint}" stroke-width="1.2"/>${w.kind==='parafix'?`<ellipse rx="3" ry="1.8" fill="${tint}"/>`:`<path d="M10 0 l5 -2 M10 0 l5 2" stroke="${tint}" stroke-width=".8"/>`}</g>`;
+    }
+    s+=`<rect x="${x-56}" y="${y+R-6}" width="112" height="22" rx="11" fill="#fff" stroke="#ced4da"/>
+        <text x="${x}" y="${y+R+9}" text-anchor="middle" font-size="11" font-weight="600">${w.id} · ${w.sample.replace(' ★','')}</text>`;
+  });
+  return plateFrame(s);
+}
+
+const WELL_INFO = {
+  A1:['SF21 cells grown directly on the base of the well. Fixed after <b>MitoTracker Red</b> was added to the live cells.','Students add the DAPI/phalloidin-FITC mix to see the <b>nucleus</b> and <b>cytoskeleton</b>. The <b>mitochondria</b> are already red.'],
+  A2:['MEFs on a round coverslip. Fixed after <b>MitoTracker Red</b> was added to the live cells.','Students add the DAPI/phalloidin-FITC mix, the same method as A1. Shows the <b>nucleus</b>, <b>cytoskeleton</b> and <b>mitochondria</b>.'],
+  A3:['Live, free-swimming <i>Paramecium</i> in culture medium.','Students add <b>MitoTracker Red</b>, which only works in living cells. Shows the <b>mitochondria</b>.'],
+  B1:['SF21 cells grown on the base of the well and fixed. Not pre-stained.','Students add <b>methylene blue</b>. Shows the <b>nucleus</b> in transmitted light.'],
+  B2:['MEFs on a round coverslip, fixed. Not pre-stained. <span class="star">★ Worked example</span>','Students add <b>methylene blue</b>. Shows the <b>nucleus</b>. Everyone starts with this protocol.'],
+  B3:['<i>Paramecium</i> fixed onto a <b>poly-L-lysine</b> coated coverslip.','Students add <b>methylene blue</b>. Shows the <b>nucleus</b> (macronucleus). Can also be explored on the fluoro scope.']
+};
+function wellCards(){
+  return WELLS.filter(w=>PARA||!w.para).map(w=>`<div class="card"><b>${w.id}: ${w.sample.replace('Paramecium','<i>Paramecium</i>')}</b>
+    <div style="margin:6px 0">${w.pre?'<span class="chip c-pre">MitoTracker ✓</span> ':''}${w.add.map(k=>({D:'<span class="chip c-dapi">DAPI</span>',F:'<span class="chip c-fitc">FITC</span>',M:'<span class="chip c-mito">MitoTracker</span>',MB:'<span class="chip c-mb">Methylene blue</span>'})[k]).join(' ')}</div>
+    <div style="font-size:.88rem">${WELL_INFO[w.id][0]}</div><div style="font-size:.88rem;margin-top:6px;color:var(--muted)">${WELL_INFO[w.id][1]} Protocol <b>${w.proto}</b>.</div></div>`).join('');
+}
+
+/* ---------- bench ---------- */
+function benchSide(x0,label){
+  const g=(dx,dy)=>`translate(${x0+dx} ${dy})`;
+  const tubes = PARA? [['#1d3557','MB'],['split','D/F'],['#e03131','Mito']] : [['#1d3557','MB'],['split','D/F']];
+  const tw=130, tstart=(tw-(tubes.length-1)*40)/2;
+  return `
+  <g transform="${g(10,210)}">
+    <rect width="160" height="125" rx="8" fill="#fff" stroke="#495057" stroke-width="2"/>
+    <rect x="35" y="45" width="90" height="58" rx="4" fill="#f1f3f5" stroke="#adb5bd"/>
+    <rect x="52" y="58" width="56" height="34" rx="2" fill="#fff" stroke="#868e96"/>
+    ${[0,1,2].map(c=>[0,1].map(r=>`<circle cx="${61+c*19}" cy="${67+r*16}" r="6" fill="none" stroke="#adb5bd"/>`).join('')).join('')}
+    <text x="80" y="22" text-anchor="middle" font-size="13" font-weight="700">EVOS M5000</text>
+    <text x="80" y="37" text-anchor="middle" font-size="9.5" fill="#5f6b7a">fluoro microscope + plate caddy</text>
+  </g>
+  <g transform="${g(25,355)}">
+    <rect width="130" height="86" rx="10" fill="#2b2f33"/><rect x="7" y="7" width="116" height="72" rx="4" fill="#e7f5ff"/>
+    <text x="65" y="38" text-anchor="middle" font-size="12" font-weight="700">iPad</text>
+    <text x="65" y="54" text-anchor="middle" font-size="9" fill="#5f6b7a">protocols + workbook</text>
+  </g>
+  <g transform="${g(10,462)}">
+    <rect width="160" height="42" rx="5" fill="#fff" stroke="#868e96"/>
+    <g transform="translate(45 21)"><rect x="-26" y="-5" width="50" height="10" rx="5" fill="#ffd8a8" stroke="#e8590c"/><text x="0" y="3.5" text-anchor="middle" font-size="8" font-weight="700">P20</text></g>
+    <g transform="translate(113 21)"><rect x="-26" y="-5" width="50" height="10" rx="5" fill="#ffec99" stroke="#e8b100"/><text x="0" y="3.5" text-anchor="middle" font-size="8" font-weight="700">P200</text></g>
+  </g>
+  <text x="${x0+90}" y="519" text-anchor="middle" font-size="9.5" fill="#5f6b7a">pipette rack</text>
+  <g transform="${g(25,530)}">
+    <rect width="${tw}" height="44" rx="5" fill="#fff" stroke="#868e96"/>
+    ${tubes.map((t,i)=>{const tx=tstart+i*40;return t[0]==='split'
+      ? `<path d="M${tx} 8 A14 14 0 0 0 ${tx} 36 Z" fill="#4263eb"/><path d="M${tx} 8 A14 14 0 0 1 ${tx} 36 Z" fill="#2f9e44"/>`
+      : `<circle cx="${tx}" cy="22" r="14" fill="${t[0]}"/>`;}).join('')}
+  </g>
+  <text x="${x0+90}" y="588" text-anchor="middle" font-size="9.5" fill="#5f6b7a">stains: ${tubes.map(t=>t[1]).join(' · ')}</text>
+  <g transform="${g(25,600)}">
+    <rect width="130" height="54" rx="5" fill="#fff" stroke="#868e96"/>
+    <circle cx="40" cy="27" r="19" fill="#a5d8ff" stroke="#1971c2"/><text x="40" y="31" text-anchor="middle" font-size="9" font-weight="700">PBS</text>
+    <circle cx="94" cy="27" r="15" fill="#ced4da" stroke="#495057"/><text x="94" y="31" text-anchor="middle" font-size="8.5" font-weight="700">Waste</text>
+  </g>
+  <text x="${x0+90}" y="668" text-anchor="middle" font-size="9.5" fill="#5f6b7a">50 mL PBS · waste tube</text>
+  <g transform="${g(35,680)}">
+    <rect width="110" height="58" rx="5" fill="#fff" stroke="#868e96"/>
+    ${Array.from({length:24},(_,i)=>`<circle cx="${14+(i%8)*12}" cy="${14+Math.floor(i/8)*15}" r="3.4" fill="#e9ecef" stroke="#adb5bd"/>`).join('')}
+  </g>
+  <text x="${x0+90}" y="752" text-anchor="middle" font-size="9.5" fill="#5f6b7a">tips (P20 / P200)</text>
+  <g transform="${g(15,765)}">
+    <rect width="150" height="100" rx="8" fill="#fff" stroke="#495057" stroke-width="2"/>
+    ${WELLS.map(w=>{const off=w.para&&!PARA;const col=off?'#fff':w.add.includes('MB')?'#1d3557':w.add.includes('M')?'#e03131':'#2f9e44';
+      return `<circle cx="${30+w.c*45}" cy="${30+w.r*42}" r="16" fill="${off?'#fff':'#f8f9fa'}" stroke="#868e96" ${off?'stroke-dasharray="3 3"':''}/>${off?'':`<circle cx="${30+w.c*45}" cy="${30+w.r*42}" r="6" fill="${col}"/>`}`}).join('')}
+  </g>
+  <text x="${x0+90}" y="880" text-anchor="middle" font-size="9.5" fill="#5f6b7a">6-well sample plate</text>
+  `;
+}
+function benchSvg(){
+  const person=(x,y)=>`<g transform="translate(${x} ${y})"><circle r="13" fill="#fff" stroke="#0b7285" stroke-width="2"/><circle cy="-2" r="4" fill="#0b7285"/><path d="M-7 8 Q0 1 7 8" stroke="#0b7285" stroke-width="2" fill="none"/></g>`;
+  return `<svg viewBox="0 0 1000 920" width="100%" role="img" aria-label="Top-down bench layout">
+  <!-- surrounding stations -->
+  <g transform="translate(30 20)">
+    <rect width="250" height="130" rx="10" fill="${PARA?'#fff':'#f8f9fa'}" stroke="${PARA?'#495057':'#ced4da'}" stroke-width="2" ${PARA?'':'stroke-dasharray="6 5"'}/>
+    <circle cx="45" cy="55" r="16" fill="#e9ecef" stroke="#868e96"/><circle cx="75" cy="55" r="16" fill="#e9ecef" stroke="#868e96"/>
+    <rect x="35" y="80" width="50" height="30" rx="4" fill="#dee2e6"/>
+    <text x="105" y="45" font-size="14" font-weight="700" fill="${PARA?'#1f2933':'#adb5bd'}">Stereo microscope</text>
+    <text x="105" y="64" font-size="11" fill="${PARA?'#5f6b7a':'#adb5bd'}">${PARA?'Live <tspan font-style="italic">Paramecium</tspan>':'Not used in this version'}</text>
+    <text x="105" y="80" font-size="11" fill="${PARA?'#5f6b7a':'#adb5bd'}">${PARA?'swimming (look first)':''}</text>
+  </g>
+  <g transform="translate(350 20)">
+    <rect width="300" height="80" rx="6" fill="#1f2933"/>
+    <text x="150" y="36" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">BIG SCREEN</text>
+    <text x="150" y="58" text-anchor="middle" font-size="11" fill="#ced4da">signpost: Fluoro station · what to do</text>
+  </g>
+  <g transform="translate(720 20)">
+    <rect width="250" height="130" rx="10" fill="#fff" stroke="#495057" stroke-width="2"/>
+    <rect x="40" y="35" width="14" height="40" rx="3" fill="#868e96"/><rect x="28" y="75" width="40" height="10" fill="#adb5bd"/><rect x="20" y="95" width="56" height="14" rx="3" fill="#dee2e6"/>
+    <text x="95" y="45" font-size="14" font-weight="700">Compound microscope</text>
+    <text x="95" y="64" font-size="11" fill="#5f6b7a">Unstained MEFs</text>
+    <text x="95" y="80" font-size="11" fill="#5f6b7a">(compare with stained)</text>
+  </g>
+  <!-- bench -->
+  <rect x="300" y="190" width="400" height="710" rx="6" fill="#f1ede6" stroke="#868e96" stroke-width="2"/>
+  <line x1="500" y1="195" x2="500" y2="895" stroke="#adb5bd" stroke-dasharray="8 6"/>
+  ${benchSide(310,'A')}${benchSide(510,'B')}
+  <!-- shared centre -->
+  <g transform="translate(500 420)"><rect x="-28" y="-18" width="56" height="36" rx="4" fill="#343a40"/><text y="4" text-anchor="middle" font-size="8.5" fill="#fff" font-weight="700">DARK BOX</text></g>
+  <text x="500" y="452" text-anchor="middle" font-size="9" fill="#5f6b7a">incubations</text>
+  <g transform="translate(500 660)"><circle r="30" fill="#fff" stroke="#495057" stroke-width="2"/><circle r="20" fill="#f1f3f5" stroke="#adb5bd"/><text y="-2" text-anchor="middle" font-size="8.5" font-weight="700">USED</text><text y="9" text-anchor="middle" font-size="8.5" font-weight="700">TIPS</text></g>
+  <!-- students -->
+  <text x="230" y="560" text-anchor="middle" font-size="16" font-weight="700" fill="#0b7285" transform="rotate(-90 230 560)">SIDE A · students stand here</text>
+  <text x="770" y="560" text-anchor="middle" font-size="16" font-weight="700" fill="#0b7285" transform="rotate(90 770 560)">SIDE B · students stand here</text>
+  ${[330,560,790].map(y=>person(270,y)+person(730,y)).join('')}
+  </svg>`;
+}
+
+/* ---------- iPad storyboard ---------- */
+function screen(title, body, bar='Fluoro station'){return `<div class="ipad"><div class="screen"><div class="sbar"><span>${bar}</span><span>${title}</span></div><div class="sbody">${body}</div></div></div>`;}
+function frame(n,title,scr,explain,cls=''){return `<div class="frame ${cls}"><h4><span class="num">${n}</span>${title}</h4>${scr}<div class="explain">${explain}</div></div>`;}
+
+function protoScreen(o){
+  return screen(o.code, `
+    <div class="sidetabs"><span class="${o.side==='A'?'on':''}">Side A · What it shows</span><span class="${o.side==='B'?'on':''}">Side B · Method</span></div>
+    <h5>${o.title}</h5>
+    <div class="wf-row">
+      <div class="wf-box" style="flex:1.3">${o.side==='A'
+        ? `<b>What the stain shows</b><ul class="steps">${o.what.map(x=>`<li>${x}</li>`).join('')}</ul><b style="margin-top:5px">Questions</b><ul class="steps">${o.q.map(x=>`<li>${x}</li>`).join('')}</ul>`
+        : `<b>Method</b><ol class="steps">${o.steps.map(x=>`<li>${x}</li>`).join('')}</ol>`}</div>
+      <div style="flex:.8;display:flex;flex-direction:column;gap:6px">
+        <div class="ph" style="flex:1">${o.side==='A'?o.ill:'Step illustration (pipette → well)'}</div>
+        <div class="wf-box"><b>You need</b>${o.need}</div>
+      </div>
+    </div>
+    <div style="margin-top:6px;display:flex;justify-content:space-between"><span class="btn ghost">← Back</span><span>${o.chips}</span><span class="btn">${o.side==='A'?'Go to method →':'Image it →'}</span></div>`);
+}
+
+const P = {
+  P1:{code:'P1 · Methylene blue', side:'B', title:'Methylene blue: fixed MEF (B2) <span class="star">★</span> or SF21 (B1)',
+    steps:['Tilt the plate and use the <b>P200</b> to remove the PBS from the well. Put it in the waste tube.',
+      'Pipette <b>50 µL 0.5% methylene blue</b> onto the coverslip (MEF) or the centre of the well (SF21). Incubate for <b>2 min</b>.',
+      'Remove the stain with the P200 and put it in the waste tube.',
+      'Gently add <b>200 µL PBS</b> down the side of the well, then remove it. Repeat until the PBS stays clear.',
+      'Leave <b>200 µL PBS</b> on the cells so they stay wet. Replace the lid.',
+      'Put the plate in the EVOS caddy. Use transmitted light, at 10× then 20×/40×.'],
+    need:'P200 · tips · MB tube · PBS · waste', chips:'<span class="chip c-mb">MB</span>'},
+  P1A:{code:'P1 · Methylene blue', side:'A', title:'Methylene blue: looking for compartments containing DNA',
+    what:['Stains DNA (and RNA) dark blue','Lightly stains the whole cell, which makes it easier to see','The nucleus stands out as the darkest structure'],
+    q:['Can you find the organelle that contains DNA?','Compare the shape and size of MEF and SF21 nuclei.'],
+    ill:'Illustration: cell with dark blue nucleus', need:'Bench items shown as icons', chips:'<span class="chip c-mb">MB</span>'},
+  P2A:{code:'P2 · DAPI + phalloidin-FITC', side:'A', title:'Three colours in one cell: fixed SF21 (A1) or MEF (A2)',
+    what:['<b style="color:#4263eb">DAPI</b> binds DNA, so the nucleus glows blue','<b style="color:#2f9e44">Phalloidin-FITC</b> binds actin, so the cytoskeleton glows green','<b style="color:#e03131">MitoTracker Red</b> was added while the cells were alive, so the mitochondria are already red','Fluorescence: a stain absorbs one colour of light and gives off a longer-wavelength colour. EVOS filter cubes pick one colour at a time.'],
+    q:['Which structures can you see in each channel?','Why was MitoTracker added <i>before</i> the cells were fixed?'],
+    ill:'Illustration: excitation → emission diagram + 3-channel overlay', need:'Bench items shown as icons', chips:'<span class="chip c-dapi">D</span> <span class="chip c-fitc">F</span>'},
+  P2:{code:'P2 · DAPI + phalloidin-FITC', side:'B', title:'DAPI + phalloidin-FITC: fixed SF21 (A1) or MEF (A2)',
+    steps:['Tilt the plate and use the <b>P200</b> to remove the PBS. Put it in the waste tube.',
+      'Pipette <b>50 µL DAPI/phalloidin-FITC mix</b> onto the cells (same method for SF21 and MEF).',
+      'Replace the lid and put the plate in the <b>dark box</b> for <b>15 min</b> <span class="tbc">to optimise</span>.',
+      'Remove the stain and put it in the waste tube.',
+      'Wash with <b>200 µL PBS</b>, then remove it. Repeat ×3.',
+      'Leave 200 µL PBS. Image in the <b>DAPI</b>, <b>GFP</b> and <b>RFP</b> channels, then make an overlay.'],
+    need:'P200 · tips · D/F tube · PBS · waste · dark box', chips:'<span class="chip c-dapi">D</span> <span class="chip c-fitc">F</span>'},
+  P3:{code:'P3 · Methylene blue', side:'B', title:'Methylene blue: fixed <i>Paramecium</i> (B3)',
+    steps:['Tilt the plate and use the <b>P200</b> to remove the PBS from B3. Put it in the waste tube.',
+      'Pipette <b>50 µL 0.5% methylene blue</b> onto the poly-L-lysine coverslip. Incubate for <b>2 min</b>.',
+      'Remove the stain and put it in the waste tube.',
+      'Gently wash with <b>200 µL PBS</b> until it runs clear. The cells stay stuck to the coverslip.',
+      'Leave 200 µL PBS. Image in transmitted light. Optional: try the fluoro channels.'],
+    need:'P200 · tips · MB tube · PBS · waste', chips:'<span class="chip c-mb">MB</span>'},
+  P4:{code:'P4 · MitoTracker Red', side:'B', title:'MitoTracker Red: live <i>Paramecium</i> (A3)',
+    steps:['Look at the live <i>Paramecium</i> on the stereo microscope first.',
+      'Use the <b>P20</b> to add <b>20 µL MitoTracker Red</b> working solution to well A3. Swirl gently.',
+      'Replace the lid and put the plate in the <b>dark box</b> for <b>15 min</b> <span class="tbc">to optimise</span>.',
+      'Wash: let the cells settle, remove <b>200 µL</b> from the top of the liquid, and replace it with fresh medium. Repeat ×2 <span class="tbc">method TBC: cells swim</span>.',
+      'Image in the <b>RFP</b> channel and in transmitted light.'],
+    need:'P20 · P200 · tips · Mito tube · medium · waste · dark box', chips:'<span class="chip c-mito">M</span>'}
+};
+
+function board(){
+  const exps = [
+    ['B2','MEF + methylene blue','<span class="chip c-mb">MB</span>',true],
+    ['B1','SF21 + methylene blue','<span class="chip c-mb">MB</span>'],
+    ['A1','SF21 + DAPI / FITC','<span class="chip c-dapi">D</span> <span class="chip c-fitc">F</span>'],
+    ['A2','MEF + DAPI / FITC','<span class="chip c-dapi">D</span> <span class="chip c-fitc">F</span>'],
+    ...(PARA?[['A3','Live <i>Paramecium</i> + MitoTracker','<span class="chip c-mito">M</span>'],['B3','Fixed <i>Paramecium</i> + MB','<span class="chip c-mb">MB</span>']]:[])
+  ];
+  const cells = PARA?['SF21','MEF','<i>Paramecium</i>']:['SF21','MEF'];
+  let out='';
+  out+=frame(1,'Welcome + onboarding', screen('Welcome',`
+    <h5>Welcome to the Fluoro station</h5>
+    <div class="wf-row" style="margin-bottom:6px">${cells.map(c=>`<div class="wf-box" style="text-align:center"><div class="ph" style="height:46px;margin-bottom:4px">${c.replace(/<\/?i>/g,'')} image</div><b>${c}</b></div>`).join('')}</div>
+    <div class="wf-row">
+      <div class="wf-box"><b>How this app works</b><ol class="steps"><li>Pick a well</li><li>Follow its protocol</li><li>Image on the EVOS</li><li>Record in your workbook</li></ol></div>
+      <div class="wf-box"><b>Everything is on your bench</b><div class="wf-row" style="gap:4px;margin-top:3px">${['EVOS','Pipettes','Stains','PBS/waste','Tips','Plate'].map(t=>`<div class="ph" style="height:30px">${t}</div>`).join('')}</div></div>
+    </div>
+    <div style="text-align:right;margin-top:6px"><span class="btn">Start →</span></div>`),
+    'Gives an overview of the cells to explore. Explains that each well has its own protocol and that the bench has everything needed, shown with icons and lab-photo placeholders.');
+
+  out+=frame(2,'Choose your wells', screen('Choose',`
+    <h5>Start with the worked example, then choose more wells</h5>
+    <div style="display:grid;grid-template-columns:repeat(${PARA?3:2},1fr);gap:6px">
+    ${exps.map(e=>`<div class="wf-box" style="${e[3]?'border-color:#e8590c;background:#fff4e6':''}"><b>${e[0]} · ${e[1]}${e[3]?' <span class="star">★</span>':''}</b>${e[2]}<div style="margin-top:3px;color:#5f6b7a">${e[3]?'Everyone starts here':'Tap to choose'}</div></div>`).join('')}
+    </div>
+    <div style="margin-top:6px;color:#5f6b7a">Your group shares one plate. Check which wells are already taken.</div>`),
+    `A choose-your-own-adventure menu. <b>B2</b> (methylene blue on MEFs) is the worked example. Each student or pair then picks 1–2 more wells, so the side completes all ${PARA?6:4} between them.`);
+
+  out+=frame(3,'Protocol P1: Side A (worked example)', protoScreen(P.P1A),'Side A, in the treatment-card style: what the stain shows, an illustration placeholder and guiding questions.');
+  out+=frame(4,'Protocol P1: Side B method <span class="star">★</span>', protoScreen(P.P1),'Numbered steps with volumes. Uses the same 0.5% methylene blue and 2 min incubation as the treatment cards. Covers both MEF (B2) and SF21 (B1).');
+  out+=frame(5,'Protocol P2: Side A (fluorescence explained)', protoScreen(P.P2A),'Explains fluorescence and all three stains. MitoTracker is shown as already added.');
+  out+=frame(6,'Protocol P2: Side B method', protoScreen(P.P2),'One addition of the premixed stain, optimised to work the same way for SF21 and MEF. Then a dark incubation, PBS washes and 3-channel imaging.');
+  if(PARA){
+    out+=frame(7,'Protocol P3: fixed <i>Paramecium</i>', protoScreen(P.P3),'Same method as P1, on a poly-L-lysine coverslip so the cells are not washed away.');
+    out+=frame(8,'Protocol P4: live <i>Paramecium</i>', protoScreen(P.P4),'MitoTracker needs living cells. The wash step is flagged for optimisation because the cells swim.');
+  }
+  const tabs = PARA?['MEF','SF21','Paramecium']:['MEF','SF21'];
+  out+=frame(PARA?9:7,'Workbook record', screen('Workbook',`
+    <div class="sidetabs">${tabs.map((t,i)=>`<span class="${i===0?'on':''}">${t}</span>`).join('')}</div>
+    <div class="wf-row">
+      <div style="flex:1.1;display:flex;flex-direction:column;gap:6px">
+        <div class="ph" style="flex:1;min-height:90px">＋ Upload image(s)<br>from EVOS / camera</div>
+        <div class="wf-row" style="gap:4px"><div class="ph" style="height:26px">img 1</div><div class="ph" style="height:26px">img 2</div><div class="ph" style="height:26px">＋</div></div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+        <div class="wf-box"><b>Can you spot…</b>
+          <div>☐ Nucleus</div><div>☐ Cytoskeleton</div><div>☐ Mitochondria</div>
+          <div style="color:#5f6b7a;margin-top:2px">Which stain / channel showed it?</div></div>
+        <div class="wf-box" style="flex:1"><b>Observations</b><div style="border:1px solid #dee2e6;border-radius:4px;height:38px;background:#fff"></div></div>
+      </div>
+    </div>`, 'Workbook'),
+    `Tabs across the top (${tabs.join(' / ')}) all use the same format: image upload, a "Can you spot" checklist and a text box for observations.`);
+  return out;
+}
+
+/* ---------- wiring ---------- */
+function render(){
+  document.getElementById('benchSvg').innerHTML=benchSvg();
+  document.getElementById('lidSvg').innerHTML=lidSvg();
+  document.getElementById('wellSvg').innerHTML=wellSvg();
+  document.getElementById('wellCards').innerHTML=wellCards();
+  document.getElementById('board').innerHTML=board();
+}
+function setVersion(p){
+  PARA=p; document.body.classList.toggle('nopara',!p);
+  document.getElementById('v-para').classList.toggle('on',p);
+  document.getElementById('v-nopara').classList.toggle('on',!p);
+  render();
+}
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('section.panel').forEach(s=>s.classList.toggle('on',s.id===b.dataset.tab));
+});
+render();
+</script>
+</body>
+</html>
